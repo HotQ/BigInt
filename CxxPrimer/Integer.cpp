@@ -1,28 +1,105 @@
 #include <cstdlib>
+#include <math.h>
 #include "Integer.h"
 
 #define Log_10_2 0.3010299957
 #define print2console
-#ifdef print2console
+
 #include <iostream>
-#endif // print2console
 
 
-struct duLNode {
-	char data;
-	duLNode * next, *prior;
+struct intString{
+	int   digits;
+	char *string;
+};
+static char maskH2L[8] = { (char)0x80,(char)0x40,(char)0x20,(char)0x10,(char)0x08,(char)0x04,(char)0x02,(char)0x01 };
+//static char maskL2H[8] = { 0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80 };
+static char i_dont_know_which_name_is_the_best[9][4] = { 
+	{ '0','2','5','6' },
+	{ '0','5','1','2' },
+	{ '0','7','6','8' },
+	{ '1','0','2','4' },
+	{ '1','2','8','0' },
+	{ '1','5','3','6' },
+	{ '1','7','9','2' },
+	{ '2','0','4','8' },
+	{ '2','3','0','4' } 
 };
 
-static duLNode* duLNode_init();
-static inline duLNode* NewNode();
-static inline duLNode* NewNode(char char_src);
-static int duLNode_length(duLNode *list);
-static void duLNode_print(duLNode *list);
-//static void duLNode_back_insert(duLNode **list, char char_src);
-//static void duLNode_front_insert(duLNode *list, char char_src);
-static void duLNode_head_insert(duLNode **list, char char_src);
-//static void duLNode_tail_insert(duLNode *list, char char_src);
-static void duLNode_destroy(duLNode *list);
+static intString* intString_init(int d);
+static intString* intString_init(int d, int int_src);
+static void intString_print(intString *intStr);
+static void intString_destroy(intString* intStr);
+static               int intString_add(intString *ax, intString *bx);
+static inline intString* intString_add(intString *ax, unsigned int bx);
+static inline intString* intString_add(intString *ax, unsigned char bx);
+static        intString* intString_add(intString *ax, char bx);
+static intString* intString_mul(intString *ax, unsigned char MULT);
+
+
+
+static intString* intString_init(int d) {
+	intString *p=(intString*)malloc(sizeof(intString));
+	p->digits = d;
+	p->string = (char*)malloc(d);
+	for (int i = 0; i < d; i++) {
+		(p->string)[i] = 0;
+	}
+	return p;
+}
+static intString* intString_init(int d, int int_src) {
+	intString *result = intString_init(d);
+	int int_src_digits= (int)ceil(log10((double)(int_src+1)));
+	for (int i = 0; i < int_src_digits; i++) {
+		(result->string)[i] = int_src % 10;
+		int_src /= 10;
+	}
+	return result;
+}
+static void intString_print(intString *intStr) {
+	for (int i = (intStr->digits) - 1; i >= 0; i--) {
+		std::cout << (char)((intStr->string)[i]+'0');
+	}
+}
+static void intString_destroy(intString* intStr) {
+	free(intStr->string);
+	free(intStr);
+}
+/// <returns> useless method </returns>
+static               int intString_add(intString *ax, intString *bx) {
+	int CF = 0, temp;
+	for (int i = 0; i < ax->digits; i++) {
+		temp = (ax->string)[i] + (bx->string)[i] + CF;
+		CF = temp / 10;
+		(ax->string)[i] = temp % 10;
+	}
+	return 0;
+}
+static inline intString* intString_add(intString *ax, unsigned int bx) {
+	intString *result = intString_init(ax->digits);
+	int CF = 0, temp;
+	for (int i = 0; i < ax->digits; i++) {
+		temp = (ax->string)[i] + bx % 10 + CF;
+		CF = temp / 10;
+		bx /= 10;
+		(result->string)[i] = temp % 10;
+	}
+	return result;
+}
+static inline intString* intString_add(intString *ax, unsigned char bx) {
+	return intString_add(ax, (unsigned int)bx);
+}
+static        intString* intString_add(intString *ax, char bx) {
+	return intString_add(ax, (unsigned char)bx);
+}
+static intString* intString_mul(intString *ax, unsigned char MULT) {
+
+	return NULL;
+}
+/// <returns> ax = ax * 256 + bx </returns>
+static void intString_mul256_add(intString *ax, char bx) {
+
+}
 
 Integer::Integer() {
 	this->init = 0;
@@ -52,64 +129,30 @@ Integer::Integer(int int_src) {
 }
 
 void Integer::print() {
-	duLNode *list = duLNode_init(), *p;
-	list->data = 'a';
-	duLNode_head_insert(&list, 'b');
-	duLNode_head_insert(&list, 'c');
-	duLNode_head_insert(&list, 'd');
-	duLNode_head_insert(&list, 'e');
-
-	duLNode_print(list);
-
-	
-
-
-	std::cout << duLNode_length(list) << std::endl;
-	
-}
-
-static inline duLNode* NewNode() {
-	return (duLNode*)malloc(sizeof(duLNode));
-}
-static inline duLNode* NewNode(char char_src) {
-	duLNode *p = (duLNode*)malloc(sizeof(duLNode));
-	p->data = char_src;
-	return p;
-}
-static duLNode* duLNode_init() {
-	duLNode *list = NewNode();
-	list->prior = list;
-	list->next  = list;
-	return list;
-}
-static int duLNode_length(duLNode *list) {
-	duLNode *p = list;
-	int  length=1;
-	while (p->next != list) {
-		length++;
-		p = p->next;
-#ifdef print2console
-		std::cout << p << "  ";
-#endif // print2console
+	char q = (char)0x84;
+	int digits = 0;
+	for (int i = this->byte - 1; i >= 0; i--) {
+		for (int j = 0; j < 8; j++) {
+			if ((this->data[i]) & maskH2L[j]) {
+				digits = 8 * i + 8 - j;
+				break;
+			}
+		}
+		if (digits)
+			break;
 	}
-	return length;
-}
-static void duLNode_print(duLNode *list) {
-	duLNode *p = list;
-	while (p->prior != list) {
-		p = p->prior;
-		std::cout << (p->data) << ' ';
-	}
-	std::cout << (list->data) << ' ';
-}
-static void duLNode_head_insert(duLNode **list, char char_src) {
-	duLNode *old_head = *list, *p;
-	p = NewNode(char_src);
+
+	/*begin to destroy the world*/
 	
-	p->prior = old_head->prior;
-	p->next  = old_head;
-	old_head->prior->next = p;
-	old_head->prior       = p;
-	
-	*list = p;
+	intString *temp_intString = intString_init((int)ceil(Log_10_2*(double)32), 123),
+		*p1 = intString_init((int)ceil(Log_10_2*(double)digits), 3456789),
+		*p2 = intString_init((int)ceil(Log_10_2*(double)digits), 1);
+	//int bx = 2344556;
+	char bx = (char)236;
+	//std::cout << temp_intString->digits << std::endl;
+	intString_print(p1); std::cout << std::endl << (unsigned int)(unsigned char)bx << std::endl;
+	//intString_print(p2); std::cout << std::endl;
+	intString_print(intString_add(p1, bx));
+
+	/*drop the mic*/
 }

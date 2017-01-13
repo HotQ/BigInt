@@ -1,4 +1,3 @@
-//#pragma once
 #ifndef INTEGER_H_INCLUDED
 #define INTEGER_H_INCLUDED
 
