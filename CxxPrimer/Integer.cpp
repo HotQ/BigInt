@@ -14,7 +14,7 @@ struct intString{
 };
 static char maskH2L[8] = { (char)0x80,(char)0x40,(char)0x20,(char)0x10,(char)0x08,(char)0x04,(char)0x02,(char)0x01 };
 //static char maskL2H[8] = { 0x01,0x02,0x04,0x08,0x10,0x20,0x40,0x80 };
-static char i_dont_know_which_name_is_the_best[9][4] = { 
+static char product_256[9][4] = {
 	{ '0','2','5','6' },
 	{ '0','5','1','2' },
 	{ '0','7','6','8' },
@@ -23,7 +23,19 @@ static char i_dont_know_which_name_is_the_best[9][4] = {
 	{ '1','5','3','6' },
 	{ '1','7','9','2' },
 	{ '2','0','4','8' },
-	{ '2','3','0','4' } 
+	{ '2','3','0','4' }
+};
+static char product_256_nooffset[10][4] = {
+	{ 0,0,0,0 },
+	{ 0,2,5,6 },
+	{ 0,5,1,2 },
+	{ 0,7,6,8 },
+	{ 1,0,2,4 },
+	{ 1,2,8,0 },
+	{ 1,5,3,6 },
+	{ 1,7,9,2 },
+	{ 2,0,4,8 },
+	{ 2,3,0,4 }
 };
 
 static intString* intString_init(int d);
@@ -34,7 +46,7 @@ static               int intString_add(intString *ax, intString *bx);
 static inline intString* intString_add(intString *ax, unsigned int bx);
 static inline intString* intString_add(intString *ax, unsigned char bx);
 static        intString* intString_add(intString *ax, char bx);
-static intString* intString_mul(intString *ax, unsigned char MULT);
+static intString* intString_mul256(intString *ax);
 
 
 
@@ -92,9 +104,21 @@ static inline intString* intString_add(intString *ax, unsigned char bx) {
 static        intString* intString_add(intString *ax, char bx) {
 	return intString_add(ax, (unsigned char)bx);
 }
-static intString* intString_mul(intString *ax, unsigned char MULT) {
+static intString* intString_mul256(intString *ax) {
+	intString *result = intString_init(ax->digits);
+	char CF = 0, temp = 0;
 
-	return NULL;
+	for (int i = 0; i < ax->digits; i++) {
+		CF = 0;
+		temp = 0;
+		char *product = product_256_nooffset[(int)(ax->string)[i]];
+		for (int j = 0; j < 4; j++) {
+			temp = (result->string)[i + j] + product[3-j] + CF;
+			CF = temp / 10;
+			(result->string)[i + j] = temp % 10;
+		}
+	}
+	return result;
 }
 /// <returns> ax = ax * 256 + bx </returns>
 static void intString_mul256_add(intString *ax, char bx) {
@@ -146,13 +170,8 @@ void Integer::print() {
 	
 	intString *temp_intString = intString_init((int)ceil(Log_10_2*(double)32), 123),
 		*p1 = intString_init((int)ceil(Log_10_2*(double)digits), 3456789),
-		*p2 = intString_init((int)ceil(Log_10_2*(double)digits), 1);
-	//int bx = 2344556;
-	char bx = (char)236;
-	//std::cout << temp_intString->digits << std::endl;
-	intString_print(p1); std::cout << std::endl << (unsigned int)(unsigned char)bx << std::endl;
-	//intString_print(p2); std::cout << std::endl;
-	intString_print(intString_add(p1, bx));
-
+		*p2 = intString_init((int)ceil(Log_10_2*(double)digits), 9879);
+	
+	intString_print(intString_mul256(p2));
 	/*drop the mic*/
 }
