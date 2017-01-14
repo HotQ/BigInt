@@ -142,31 +142,41 @@ Integer::Integer(int int_src) {
 			this->sign = 1;
 			int_src = -int_src;
 		}
+		for (int i = 0; i < bytes; i++) {
+			data[i] = int_src % 0x100;
+			int_src = int_src >> 8;
+		}
 	}
-	for (int i = 0; i < bytes; i++) {
-		data[i] = int_src % 0x100;
-		int_src = int_src >> 8;
-	}
+
 }
 
 void Integer::print() {
 	int digits = 0;
 	intString *temp_intString;
-	for (int i = this->byte - 1; i >= 0; i--) {
-		for (int j = 0; j < 8; j++) {
-			if ((this->data[i]) & maskH2L[j]) {
-				digits = 8 * i + 8 - j;
-				break;
-			}
-		}
-		if (digits)
-			break;
-	}
-	temp_intString = intString_init((int)ceil(Log_10_2*(double)digits), (this->data)[this->byte - 1]);
-	for (int i = this->byte - 2; i >= 0; i--) {
-		intString_add(intString_mul256(&temp_intString), (this->data)[i]);
-	}
 	if (this->sign)std::cout << '-';
-	intString_print(temp_intString);
-	intString_destroy(temp_intString);
+
+	if (this->zero)
+		std::cout << '0';
+	else {
+		for (int i = this->byte - 1; i >= 0; i--) {
+			for (int j = 0; j < 8; j++) {
+				if ((this->data[i]) & maskH2L[j]) {
+					digits = 8 * i + 8 - j;
+					break;
+				}
+			}
+			if (digits)
+				break;
+		}
+		if (digits <= 8)
+			std::cout << (unsigned)(this->data)[0];
+		else {
+			temp_intString = intString_init((int)ceil(Log_10_2*(double)digits), (this->data)[this->byte - 1]);
+			for (int i = this->byte - 2; i >= 0; i--) {
+				intString_add(intString_mul256(&temp_intString), (this->data)[i]);
+			}
+			intString_print(temp_intString);
+			intString_destroy(temp_intString);
+		}
+	}
 }

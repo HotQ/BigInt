@@ -6,7 +6,7 @@
 int main()
 {
 
-	Integer integer(0x7234567F);
+	Integer integer(1);
 	int temp;
 	integer.print();
 	std::cin >> temp;
