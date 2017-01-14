@@ -11,7 +11,7 @@ public:
     unsigned int init : 1;
 	unsigned int byte : 29;
 
-	char *data;
+	unsigned char *data;
 
 	Integer();
 	Integer(int temp);
