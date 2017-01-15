@@ -1,29 +1,17 @@
-#include <cstdlib>
 #include <iostream>
+#include <string>
+#include <cstdlib>
 #include <cmath>
 #include "Integer.h"
 
 #define Log_10_2 0.3010299957
-#define print2console
-
-
+#define Log_2_10 3.3219280959
 
 struct intString{
 	int   digits;
 	unsigned char *string;
 };
 static unsigned char maskH2L[8] = { 0x80,0x40,0x20,0x10,0x08,0x04,0x02,0x01 };
-static unsigned char product_256[9][4] = {
-	{ '0','2','5','6' },
-	{ '0','5','1','2' },
-	{ '0','7','6','8' },
-	{ '1','0','2','4' },
-	{ '1','2','8','0' },
-	{ '1','5','3','6' },
-	{ '1','7','9','2' },
-	{ '2','0','4','8' },
-	{ '2','3','0','4' }
-};
 static unsigned char product_256_nooffset[10][4] = {
 	{ 0,0,0,0 },
 	{ 0,2,5,6 },
@@ -45,6 +33,7 @@ static void intString_destroy(intString* intStr);
 static intString* intString_add(intString *ax, intString *bx);
 static intString* intString_add(intString *ax, unsigned char bx);
 static intString* intString_mul256(intString **ax);
+static inline unsigned char chr_2_0x(char chr);
 
 
 static intString* intString_init(int d) {
@@ -74,7 +63,9 @@ static intString* intString_init(int d, unsigned char chr_src) {
 	return result;
 }
 static void intString_print(intString *intStr) {
-	for (int i = (intStr->digits) - 1; i >= 0; i--) {
+	int i = (intStr->digits) - 1;
+	while ((intStr->string)[i] == 0)i--;
+	for (; i >= 0; i--) {
 		std::cout << (char)((intStr->string)[i]+'0');
 	}
 }
@@ -121,17 +112,25 @@ static intString* intString_mul256(intString **ax) {
 	(*ax) = result;
 	return (*ax);
 }
+static inline unsigned char chr_2_0x(char chr) {
+    if (chr >= 'a' && chr <= 'f') return (unsigned char)(chr - 'a' +10);
+    if (chr >= '0' && chr <= '9') return (unsigned char)(chr - '0');
+    return -1;
+}
 
 Integer::Integer() {
 	this->init = 0;
+    this->data = NULL;
 }
 Integer::Integer(int int_src) {
-	int bytes = (int)sizeof(int);
-	this->init = 1;
-	this->data = (unsigned char*)malloc(bytes);
+    int bytes = (int)sizeof(int);
+    this->init = 1;
+    this->data = (unsigned char*)malloc(bytes);
 
-	if (int_src == 0)
-		this->zero = 1;
+    if (int_src == 0) {
+        this->zero = 1;
+        this->data = NULL;
+    }
 	else {
 		this->zero = 0;
 		this->byte = bytes;
@@ -149,15 +148,69 @@ Integer::Integer(int int_src) {
 	}
 
 }
+Integer::Integer(const char *cchr_src)
+{
+    this->init = 0;
+    std::string str_src(cchr_src);
+    int length = (int)str_src.length(),
+        lengthOffset = 0,
+        i,j;
+
+    if (str_src[0] == '-') {
+        this->sign = 1;
+        lengthOffset++;
+    }
+    if (str_src[lengthOffset] == '0' && length == 1+lengthOffset) {
+        this->zero = 1;
+        this->data = NULL;
+    }
+    else if (str_src[lengthOffset] == '0' && !(str_src[lengthOffset + 1] == 'x' || str_src[lengthOffset + 1] == 'X')) {
+        /// string to octonary
+        // TODO: Implementation of Integer::Integer(string), string to hexadecimal
+
+        lengthOffset++;
+        std::string temp = str_src.substr(lengthOffset, length - lengthOffset);
+        
+        this->data = NULL;
+    }
+    else if (str_src[lengthOffset] == '0' && (str_src[lengthOffset + 1] == 'x' || str_src[lengthOffset + 1] == 'X')) {
+        /// string to hexadecimal
+        
+        lengthOffset += 2;
+        length -= lengthOffset;
+        std::string temp = str_src.substr(lengthOffset, length);
+
+        int digits = (int)ceil((double)length  / 2);
+        digits = (4 > digits ? 4 : digits);
+        
+        this->byte = digits;
+        this->data = (unsigned char *)malloc(digits);
+        for (i = 0; i < digits; i++)
+            (this->data)[i] = (unsigned char)0x00;
+        
+        j = 0;
+        for (i = length - 1; i > 0; i -= 2) 
+            (this->data)[j++] = chr_2_0x(temp[i - 1]) * 16 + chr_2_0x(temp[i]);
+        if (i == 0)
+            (this->data)[j] = chr_2_0x(temp[0]);
+    }
+    else {
+        /// string to decimal
+        //TODO: Implementation of Integer::Integer(string), string to decimal
+        
+        this->init = 1;
+        this->data = NULL;
+    }
+}
 
 void Integer::print() {
 	int digits = 0;
 	intString *temp_intString;
-	if (this->sign)std::cout << '-';
-
+	
 	if (this->zero)
 		std::cout << '0';
 	else {
+		if (this->sign)std::cout << '-';
 		for (int i = this->byte - 1; i >= 0; i--) {
 			for (int j = 0; j < 8; j++) {
 				if ((this->data[i]) & maskH2L[j]) {
@@ -179,4 +232,9 @@ void Integer::print() {
 			intString_destroy(temp_intString);
 		}
 	}
+}
+
+Integer::~Integer() {
+    if(this->data)
+	    free(this->data);
 }

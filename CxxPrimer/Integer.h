@@ -5,7 +5,7 @@
 
 class Integer
 {
-public:
+private:
 	unsigned int sign : 1;
 	unsigned int zero : 1;
     unsigned int init : 1;
@@ -13,10 +13,14 @@ public:
 
 	unsigned char *data;
 
+public:
 	Integer();
-	Integer(int temp);
-	
+	Integer(int int_src);
+    Integer(const char *cchr_src);
+
 	void print();
+
+	~Integer();
 	
 };
 
