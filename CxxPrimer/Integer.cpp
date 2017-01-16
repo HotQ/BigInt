@@ -7,7 +7,7 @@
 #define Log_10_2 0.3010299957
 #define Log_2_10 3.3219280959
 
-struct intString{
+struct intString {
 	int   digits;
 	unsigned char *string;
 };
@@ -33,11 +33,14 @@ static void intString_destroy(intString* intStr);
 static intString* intString_add(intString *ax, intString *bx);
 static intString* intString_add(intString *ax, unsigned char bx);
 static intString* intString_mul256(intString **ax);
+
 static inline unsigned char chr_2_0x(char chr);
+static inline int divide256(char *dividend_offset);
+static inline void divident_sub_256(char *dividend_offset, int quotient);
 
 
 static intString* intString_init(int d) {
-	intString *p=(intString*)malloc(sizeof(intString));
+	intString *p = (intString*)malloc(sizeof(intString));
 	p->digits = d;
 	p->string = (unsigned char*)malloc(d);
 	for (int i = 0; i < d; i++) {
@@ -47,7 +50,7 @@ static intString* intString_init(int d) {
 }
 static intString* intString_init(int d, int int_src) {
 	intString *result = intString_init(d);
-	int int_src_digits= (int)ceil(log10((double)(int_src+1)));
+	int int_src_digits = (int)ceil(log10((double)(int_src + 1)));
 	for (int i = 0; i < int_src_digits; i++) {
 		(result->string)[i] = int_src % 10;
 		int_src /= 10;
@@ -66,7 +69,7 @@ static void intString_print(intString *intStr) {
 	int i = (intStr->digits) - 1;
 	while ((intStr->string)[i] == 0)i--;
 	for (; i >= 0; i--) {
-		std::cout << (char)((intStr->string)[i]+'0');
+		std::cout << (char)((intStr->string)[i] + '0');
 	}
 }
 static void intString_destroy(intString* intStr) {
@@ -102,7 +105,7 @@ static intString* intString_mul256(intString **ax) {
 		CF = 0;
 		temp = 0;
 		unsigned char *product = product_256_nooffset[(int)((*ax)->string)[i]];
-		for (int j = 0; j < (4 < ((*ax)->digits - i) ? 4 : (*ax)->digits - i); j++)  {
+		for (int j = 0; j < (4 < ((*ax)->digits - i) ? 4 : (*ax)->digits - i); j++) {
 			temp = (result->string)[i + j] + product[3 - j] + CF;
 			CF = temp / 10;
 			(result->string)[i + j] = temp % 10;
@@ -112,25 +115,141 @@ static intString* intString_mul256(intString **ax) {
 	(*ax) = result;
 	return (*ax);
 }
+
 static inline unsigned char chr_2_0x(char chr) {
-    if (chr >= 'a' && chr <= 'f') return (unsigned char)(chr - 'a' +10);
-    if (chr >= '0' && chr <= '9') return (unsigned char)(chr - '0');
-    return -1;
+	if (chr >= 'a' && chr <= 'f') return (unsigned char)(chr - 'a' + 10);
+	if (chr >= '0' && chr <= '9') return (unsigned char)(chr - '0');
+	return -1;
+}
+static inline int divide256(char *dividend_offset) {
+	switch (dividend_offset[0])
+	{
+	case 0:
+		switch (dividend_offset[1]) {
+		case 0:
+		case 1:
+			return 0;
+		case 2:
+			if (dividend_offset[2] < 5 || (dividend_offset[2] == 5 && dividend_offset[3] < 6)) 
+				return 0;
+		case 3:
+		case 4:
+			divident_sub_256(dividend_offset, 1);
+			return 1;
+		case 5://
+			if (dividend_offset[2] < 1 || (dividend_offset[2] == 1 && dividend_offset[3] < 2)) {
+				divident_sub_256(dividend_offset, 1);
+				return 1;
+			}
+		case 6:
+			divident_sub_256(dividend_offset, 2);
+			return 2;
+		case 7:
+			if (dividend_offset[2] < 6 || (dividend_offset[2] == 6 && dividend_offset[3] < 8)) {
+				divident_sub_256(dividend_offset, 2);
+				return 2;
+			}
+		case 8:
+		case 9:
+			divident_sub_256(dividend_offset, 3);
+			return 3;
+		}
+	case 1:
+		switch (dividend_offset[1]) {
+		case 0:
+			if (dividend_offset[2] < 2 || (dividend_offset[2] == 2 && dividend_offset[3] < 4)) {
+				divident_sub_256(dividend_offset, 3);
+				return 3;
+			}
+		case 1:
+			divident_sub_256(dividend_offset, 4);
+			return 4;
+		case 2:
+			if (dividend_offset[2] < 8) {
+				divident_sub_256(dividend_offset, 4);
+				return 4;
+			}
+		case 3:
+		case 4:
+			divident_sub_256(dividend_offset, 5);
+			return 5;
+		case 5:
+			if (dividend_offset[2] < 3 || (dividend_offset[2] == 3 && dividend_offset[3] < 6)) {
+				divident_sub_256(dividend_offset, 5);
+				return 5;
+			}
+		case 6:
+			divident_sub_256(dividend_offset, 6);
+			return 6;
+		case 7:
+			if (dividend_offset[2] < 9 || (dividend_offset[2] == 9 && dividend_offset[3] < 2)) {
+				divident_sub_256(dividend_offset, 6);
+				return 6;
+			}
+		case 8:
+		case 9:
+			divident_sub_256(dividend_offset, 7);
+			return 7;
+		}
+	case 2:
+		switch (dividend_offset[1])
+		{
+		case 0:
+			if (dividend_offset[2] < 4 || (dividend_offset[2] == 4 && dividend_offset[3] < 8)) {
+				divident_sub_256(dividend_offset, 7);
+				return 7;
+			}
+		case 1:
+		case 2:
+			divident_sub_256(dividend_offset, 8);
+			return 8;
+		case 3:
+			if (dividend_offset[2] < 0 || (dividend_offset[2] == 0 && dividend_offset[3] < 4)) {
+				divident_sub_256(dividend_offset, 8);
+				return 8;
+			}
+		case 4:
+		case 5:
+			divident_sub_256(dividend_offset, 9);
+			return 9;
+		}
+	}
+	return -1;
+}
+static inline void divident_sub_256(char *dividend_offset, int quotient) {
+	int CF = 0, temp;
+	for (int i = 3; i >= 0; i--) {
+		temp = dividend_offset[i] - CF - (int)product_256_nooffset[quotient][i];
+		if (temp >= 0) {
+			dividend_offset[i] = (char)temp;
+			CF = 0;
+		}
+		else {
+			dividend_offset[i] = (char)(10 + temp);
+			CF = 1;
+		}
+	}
+
+}
+static inline int zero_number(char *dividend) {
+	int i = 0;
+	while (dividend[i] == 0)i++;
+	return i;
 }
 
 Integer::Integer() {
 	this->init = 0;
-    this->data = NULL;
+	this->data = NULL;
 }
 Integer::Integer(int int_src) {
-    int bytes = (int)sizeof(int);
-    this->init = 1;
-    this->data = (unsigned char*)malloc(bytes);
+	int bytes = (int)sizeof(int);
+	this->init = 1;
+	this->data = (unsigned char*)malloc(bytes);
 
-    if (int_src == 0) {
-        this->zero = 1;
-        this->data = NULL;
-    }
+	if (int_src == 0) {
+		this->zero = 1;
+		this->data = NULL;
+	}
 	else {
 		this->zero = 0;
 		this->byte = bytes;
@@ -150,63 +269,115 @@ Integer::Integer(int int_src) {
 }
 Integer::Integer(const char *cchr_src)
 {
-    this->init = 0;
-    std::string str_src(cchr_src);
-    int length = (int)str_src.length(),
-        lengthOffset = 0,
-        i,j;
+	this->init = 0;
+	std::string str_src(cchr_src);
+	int length = (int)str_src.length(),
+		lengthOffset = 0,
+		i, j;
 
-    if (str_src[0] == '-') {
-        this->sign = 1;
-        lengthOffset++;
-    }
-    if (str_src[lengthOffset] == '0' && length == 1+lengthOffset) {
-        this->zero = 1;
-        this->data = NULL;
-    }
-    else if (str_src[lengthOffset] == '0' && !(str_src[lengthOffset + 1] == 'x' || str_src[lengthOffset + 1] == 'X')) {
-        /// string to octonary
-        // TODO: Implementation of Integer::Integer(string), string to hexadecimal
+	if (str_src[0] == '-') {
+		this->sign = 1;
+		lengthOffset++;
+	}
+	if (str_src[lengthOffset] == '0' && length == 1 + lengthOffset) {
+		this->zero = 1;
+		this->data = NULL;
+	}
+	else if (str_src[lengthOffset] == '0' && !(str_src[lengthOffset + 1] == 'x' || str_src[lengthOffset + 1] == 'X')) {
+		/// string to octonary
 
-        lengthOffset++;
-        std::string temp = str_src.substr(lengthOffset, length - lengthOffset);
-        
-        this->data = NULL;
-    }
-    else if (str_src[lengthOffset] == '0' && (str_src[lengthOffset + 1] == 'x' || str_src[lengthOffset + 1] == 'X')) {
-        /// string to hexadecimal
-        
-        lengthOffset += 2;
-        length -= lengthOffset;
-        std::string temp = str_src.substr(lengthOffset, length);
+		lengthOffset++;
+		length -= lengthOffset;
+		std::string temp = str_src.substr(lengthOffset, length);
 
-        int digits = (int)ceil((double)length  / 2);
-        digits = (4 > digits ? 4 : digits);
-        
-        this->byte = digits;
-        this->data = (unsigned char *)malloc(digits);
-        for (i = 0; i < digits; i++)
-            (this->data)[i] = (unsigned char)0x00;
-        
-        j = 0;
-        for (i = length - 1; i > 0; i -= 2) 
-            (this->data)[j++] = chr_2_0x(temp[i - 1]) * 16 + chr_2_0x(temp[i]);
-        if (i == 0)
-            (this->data)[j] = chr_2_0x(temp[0]);
-    }
-    else {
-        /// string to decimal
-        //TODO: Implementation of Integer::Integer(string), string to decimal
-        
-        this->init = 1;
-        this->data = NULL;
-    }
+		int digits = (int)ceil((double)length * 3 / 8);
+		digits = (4 > digits ? 4 : digits);
+
+		this->byte = digits;
+		this->data = (unsigned char *)malloc(digits);
+		for (i = 0; i < digits; i++)
+			(this->data)[i] = (unsigned char)0x00;
+
+		for (i = 0; i < length; i++) {
+			j = 3 * (length - 1 - i);
+			unsigned char chr = temp[i] - '0';
+
+			this->data[(j + 0) / 8] += (chr & (unsigned char)1) / 1 * (unsigned char)pow(2, (j + 0) % 8);
+			this->data[(j + 1) / 8] += (chr & (unsigned char)2) / 2 * (unsigned char)pow(2, (j + 1) % 8);
+			this->data[(j + 2) / 8] += (chr & (unsigned char)4) / 4 * (unsigned char)pow(2, (j + 2) % 8);
+		}
+	}
+	else if (str_src[lengthOffset] == '0' && (str_src[lengthOffset + 1] == 'x' || str_src[lengthOffset + 1] == 'X')) {
+		/// string to hexadecimal
+
+		lengthOffset += 2;
+		length -= lengthOffset;
+		std::string temp = str_src.substr(lengthOffset, length);
+
+		int digits = (int)ceil((double)length / 2);
+		digits = (4 > digits ? 4 : digits);
+
+		this->byte = digits;
+		this->data = (unsigned char *)malloc(digits);
+		for (i = 0; i < digits; i++)
+			(this->data)[i] = (unsigned char)0x00;
+
+		j = 0;
+		for (i = length - 1; i > 0; i -= 2)
+			(this->data)[j++] = chr_2_0x(temp[i - 1]) * 16 + chr_2_0x(temp[i]);
+		if (i == 0)
+			(this->data)[j] = chr_2_0x(temp[0]);
+	}
+	else {
+		/// string to decimal
+
+		length -= lengthOffset;
+		char *dividend = (char *)malloc(length + 1),
+			*quotient = (char *)malloc(length),
+			*swap;
+
+		strcpy(dividend + 1, cchr_src + lengthOffset);
+		dividend[0] = 0;
+		quotient[0] = 0;
+		for (i = 1; i < length + 1; i++) {
+			dividend[i] -= '0';
+			quotient[i] = 0;
+		}
+
+		int digits = (int)ceil((double)length* Log_2_10 / 8);
+		digits = (4 > digits ? 4 : digits);
+
+		this->byte = digits;
+		this->data = (unsigned char *)malloc(digits);
+		for (i = 0; i < digits; i++)
+			(this->data)[i] = (unsigned char)0x00;
+
+
+		j = 0;
+		while (length + 1 - zero_number(dividend) >= 3) {
+
+			for (i = 0; i <= length - 3; i++) {
+				quotient[i + 3] = divide256(dividend + i);
+			}
+			(this->data)[j++] = (unsigned char)(100 * dividend[length - 2] + 10 * dividend[length - 1] + dividend[length]);
+
+			swap = dividend;
+			dividend = quotient;
+			quotient = swap;
+
+			quotient[length] = 0;
+			quotient[length - 1] = 0;
+			quotient[length - 2] = 0;
+
+		}
+		(this->data)[j++] = (unsigned char)(100 * dividend[length - 2] + 10 * dividend[length - 1] + dividend[length]);
+	}
 }
 
 void Integer::print() {
 	int digits = 0;
 	intString *temp_intString;
-	
+
 	if (this->zero)
 		std::cout << '0';
 	else {
@@ -235,6 +406,6 @@ void Integer::print() {
 }
 
 Integer::~Integer() {
-    if(this->data)
-	    free(this->data);
+	if (this->data)
+		free(this->data);
 }

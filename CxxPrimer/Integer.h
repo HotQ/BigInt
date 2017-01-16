@@ -8,7 +8,7 @@ class Integer
 private:
 	unsigned int sign : 1;
 	unsigned int zero : 1;
-    unsigned int init : 1;
+	unsigned int init : 1;
 	unsigned int byte : 29;
 
 	unsigned char *data;
