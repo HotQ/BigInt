@@ -4,14 +4,15 @@
 
 
 
+
 int main()
 {
 	Integer z1("-0");                             z1.print(); std::cout << std::endl;
 	Integer z2("0");                              z1.print(); std::cout << std::endl;
 	Integer o1("-01");                            o1.print(); std::cout << std::endl;
 	Integer o2("-0100000345456767071265432345");  o2.print(); std::cout << std::endl;
-	Integer o3("07618238751327766876988788786");  o3.print(); std::cout << std::endl;
-	Integer h1("0x09b0c89d90a0989f0e8");          h1.print(); std::cout << std::endl;
+	Integer o3("07610230751327766076905725764");  o3.print(); std::cout << std::endl;
+	Integer h1("0x9b0c89d90a0989f0e8");           h1.print(); std::cout << std::endl;
 	Integer h2("-0X9088ff7a09e70fe8a979b089");    h2.print(); std::cout << std::endl;
 	Integer d1("-65497952");                      d1.print(); std::cout << std::endl;
 	Integer d2("978943897548940");                d2.print(); std::cout << std::endl;

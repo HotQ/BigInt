@@ -1,5 +1,4 @@
 #include <iostream>
-#include <string>
 #include <cstdlib>
 #include <cmath>
 #include "Integer.h"
@@ -130,7 +129,7 @@ static inline int divide256(char *dividend_offset) {
 		case 1:
 			return 0;
 		case 2:
-			if (dividend_offset[2] < 5 || (dividend_offset[2] == 5 && dividend_offset[3] < 6)) 
+			if (dividend_offset[2] < 5 || (dividend_offset[2] == 5 && dividend_offset[3] < 6))
 				return 0;
 		case 3:
 		case 4:
@@ -265,30 +264,29 @@ Integer::Integer(int int_src) {
 			int_src = int_src >> 8;
 		}
 	}
-
 }
 Integer::Integer(const char *cchr_src)
 {
 	this->init = 0;
-	std::string str_src(cchr_src);
-	int length = (int)str_src.length(),
+	int length = (int)strlen(cchr_src),
 		lengthOffset = 0,
 		i, j;
 
-	if (str_src[0] == '-') {
+	if (cchr_src[0] == '-') {
 		this->sign = 1;
 		lengthOffset++;
 	}
-	if (str_src[lengthOffset] == '0' && length == 1 + lengthOffset) {
+	if (cchr_src[lengthOffset] == '0' && length == 1 + lengthOffset) {
 		this->zero = 1;
 		this->data = NULL;
 	}
-	else if (str_src[lengthOffset] == '0' && !(str_src[lengthOffset + 1] == 'x' || str_src[lengthOffset + 1] == 'X')) {
+	else if (cchr_src[lengthOffset] == '0' && !(cchr_src[lengthOffset + 1] == 'x' || cchr_src[lengthOffset + 1] == 'X')) {
 		/// string to octonary
-
+		
 		lengthOffset++;
 		length -= lengthOffset;
-		std::string temp = str_src.substr(lengthOffset, length);
+		const char * str_src = cchr_src + lengthOffset;
+
 
 		int digits = (int)ceil((double)length * 3 / 8);
 		digits = (4 > digits ? 4 : digits);
@@ -300,19 +298,21 @@ Integer::Integer(const char *cchr_src)
 
 		for (i = 0; i < length; i++) {
 			j = 3 * (length - 1 - i);
-			unsigned char chr = temp[i] - '0';
+			unsigned char chr = str_src[i] - '0';
 
 			this->data[(j + 0) / 8] += (chr & (unsigned char)1) / 1 * (unsigned char)pow(2, (j + 0) % 8);
 			this->data[(j + 1) / 8] += (chr & (unsigned char)2) / 2 * (unsigned char)pow(2, (j + 1) % 8);
 			this->data[(j + 2) / 8] += (chr & (unsigned char)4) / 4 * (unsigned char)pow(2, (j + 2) % 8);
 		}
 	}
-	else if (str_src[lengthOffset] == '0' && (str_src[lengthOffset + 1] == 'x' || str_src[lengthOffset + 1] == 'X')) {
+	else if (cchr_src[lengthOffset] == '0' && (cchr_src[lengthOffset + 1] == 'x' || cchr_src[lengthOffset + 1] == 'X')) {
 		/// string to hexadecimal
 
+		this->data = NULL;
 		lengthOffset += 2;
 		length -= lengthOffset;
-		std::string temp = str_src.substr(lengthOffset, length);
+		const char * str_src = cchr_src + lengthOffset;
+
 
 		int digits = (int)ceil((double)length / 2);
 		digits = (4 > digits ? 4 : digits);
@@ -324,23 +324,22 @@ Integer::Integer(const char *cchr_src)
 
 		j = 0;
 		for (i = length - 1; i > 0; i -= 2)
-			(this->data)[j++] = chr_2_0x(temp[i - 1]) * 16 + chr_2_0x(temp[i]);
+			(this->data)[j++] = chr_2_0x(str_src[i - 1]) * 16 + chr_2_0x(str_src[i]);
 		if (i == 0)
-			(this->data)[j] = chr_2_0x(temp[0]);
+			(this->data)[j] = chr_2_0x(str_src[0]);
 	}
 	else {
 		/// string to decimal
 
 		length -= lengthOffset;
 		char *dividend = (char *)malloc(length + 1),
-			*quotient = (char *)malloc(length),
+			*quotient = (char *)malloc(length + 1),
 			*swap;
 
-		strcpy(dividend + 1, cchr_src + lengthOffset);
 		dividend[0] = 0;
 		quotient[0] = 0;
 		for (i = 1; i < length + 1; i++) {
-			dividend[i] -= '0';
+			dividend[i] = cchr_src[i - 1 + lengthOffset]-'0';
 			quotient[i] = 0;
 		}
 
@@ -371,6 +370,8 @@ Integer::Integer(const char *cchr_src)
 
 		}
 		(this->data)[j++] = (unsigned char)(100 * dividend[length - 2] + 10 * dividend[length - 1] + dividend[length]);
+		free(dividend);
+		free(quotient);
 	}
 }
 
