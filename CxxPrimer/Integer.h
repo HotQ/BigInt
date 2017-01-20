@@ -1,16 +1,15 @@
 #ifndef INTEGER_H_INCLUDED
 #define INTEGER_H_INCLUDED
 
-
-
 class Integer
 {
-private:
+public:
 	unsigned int sign : 1;
 	unsigned int zero : 1;
 	unsigned int init : 1;
-	unsigned int byte : 29;
 
+private:
+	unsigned int byte : 29;
 	unsigned char *data;
 
 public:
@@ -19,11 +18,13 @@ public:
     Integer(const char *cchr_src);
 
 	void print();
+	int bidigits();
+
+	Integer& reset();
+	Integer& add(const Integer &rhs);
 
 	~Integer();
 	
 };
-
-
 
 #endif // !INTEGER_H_INCLUDED

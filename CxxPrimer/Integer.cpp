@@ -36,6 +36,7 @@ static intString* intString_mul256(intString **ax);
 static inline unsigned char chr_2_0x(char chr);
 static inline int divide256(char *dividend_offset);
 static inline void divident_sub_256(char *dividend_offset, int quotient);
+static inline int zero_number(char *dividend);
 
 
 static intString* intString_init(int d) {
@@ -267,7 +268,7 @@ Integer::Integer(int int_src) {
 }
 Integer::Integer(const char *cchr_src)
 {
-	this->init = 0;
+	this->init = 1;
 	int length = (int)strlen(cchr_src),
 		lengthOffset = 0,
 		i, j;
@@ -276,6 +277,9 @@ Integer::Integer(const char *cchr_src)
 		this->sign = 1;
 		lengthOffset++;
 	}
+	else 
+		this->sign = 0;
+	
 	if (cchr_src[lengthOffset] == '0' && length == 1 + lengthOffset) {
 		this->zero = 1;
 		this->data = NULL;
@@ -287,9 +291,8 @@ Integer::Integer(const char *cchr_src)
 		length -= lengthOffset;
 		const char * str_src = cchr_src + lengthOffset;
 
-
 		int digits = (int)ceil((double)length * 3 / 8);
-		digits = (4 > digits ? 4 : digits);
+		digits = (sizeof(int) > digits ? sizeof(int) : digits);
 
 		this->byte = digits;
 		this->data = (unsigned char *)malloc(digits);
@@ -308,14 +311,13 @@ Integer::Integer(const char *cchr_src)
 	else if (cchr_src[lengthOffset] == '0' && (cchr_src[lengthOffset + 1] == 'x' || cchr_src[lengthOffset + 1] == 'X')) {
 		/// string to hexadecimal
 
-		this->data = NULL;
 		lengthOffset += 2;
 		length -= lengthOffset;
 		const char * str_src = cchr_src + lengthOffset;
 
 
 		int digits = (int)ceil((double)length / 2);
-		digits = (4 > digits ? 4 : digits);
+		digits = (sizeof(int) > digits ? sizeof(int) : digits);
 
 		this->byte = digits;
 		this->data = (unsigned char *)malloc(digits);
@@ -332,46 +334,52 @@ Integer::Integer(const char *cchr_src)
 		/// string to decimal
 
 		length -= lengthOffset;
-		char *dividend = (char *)malloc(length + 1),
-			*quotient = (char *)malloc(length + 1),
-			*swap;
-
-		dividend[0] = 0;
-		quotient[0] = 0;
-		for (i = 1; i < length + 1; i++) {
-			dividend[i] = cchr_src[i - 1 + lengthOffset]-'0';
-			quotient[i] = 0;
-		}
-
 		int digits = (int)ceil((double)length* Log_2_10 / 8);
-		digits = (4 > digits ? 4 : digits);
+		digits = (sizeof(int) > digits ? sizeof(int) : digits);
 
 		this->byte = digits;
 		this->data = (unsigned char *)malloc(digits);
 		for (i = 0; i < digits; i++)
 			(this->data)[i] = (unsigned char)0x00;
 
+		if(length==1){
+			(this->data)[0] = (unsigned char)(cchr_src[lengthOffset] - '0');
+		}
+		else {
+			char *dividend = (char *)malloc(length + 1),
+				*quotient = (char *)malloc(length + 1),
+				*swap;
 
-		j = 0;
-		while (length + 1 - zero_number(dividend) >= 3) {
+			dividend[0] = 0;
+			quotient[0] = 0;
+			for (i = 1; i < length + 1; i++) {
+				dividend[i] = cchr_src[i - 1 + lengthOffset] - '0';
+				quotient[i] = 0;
+			}
 
-			for (i = 0; i <= length - 3; i++) {
-				quotient[i + 3] = divide256(dividend + i);
+
+
+			j = 0;
+			while (length + 1 - zero_number(dividend) >= 3) {
+
+				for (i = 0; i <= length - 3; i++) {
+					quotient[i + 3] = divide256(dividend + i);
+				}
+				(this->data)[j++] = (unsigned char)(100 * dividend[length - 2] + 10 * dividend[length - 1] + dividend[length]);
+
+				swap = dividend;
+				dividend = quotient;
+				quotient = swap;
+
+				quotient[length] = 0;
+				quotient[length - 1] = 0;
+				quotient[length - 2] = 0;
+
 			}
 			(this->data)[j++] = (unsigned char)(100 * dividend[length - 2] + 10 * dividend[length - 1] + dividend[length]);
-
-			swap = dividend;
-			dividend = quotient;
-			quotient = swap;
-
-			quotient[length] = 0;
-			quotient[length - 1] = 0;
-			quotient[length - 2] = 0;
-
+			free(dividend);
+			free(quotient);
 		}
-		(this->data)[j++] = (unsigned char)(100 * dividend[length - 2] + 10 * dividend[length - 1] + dividend[length]);
-		free(dividend);
-		free(quotient);
 	}
 }
 
@@ -383,16 +391,7 @@ void Integer::print() {
 		std::cout << '0';
 	else {
 		if (this->sign)std::cout << '-';
-		for (int i = this->byte - 1; i >= 0; i--) {
-			for (int j = 0; j < 8; j++) {
-				if ((this->data[i]) & maskH2L[j]) {
-					digits = 8 * i + 8 - j;
-					break;
-				}
-			}
-			if (digits)
-				break;
-		}
+		int digits = this->bidigits();
 		if (digits <= 8)
 			std::cout << (unsigned)(this->data)[0];
 		else {
@@ -404,6 +403,20 @@ void Integer::print() {
 			intString_destroy(temp_intString);
 		}
 	}
+}
+int Integer::bidigits() {
+	int digits = 0;
+	for (int i = this->byte - 1; i >= 0; i--) {
+		for (int j = 0; j < 8; j++) {
+			if ((this->data[i]) & maskH2L[j]) {
+				digits = 8 * i + 8 - j;
+				break;
+			}
+		}
+		if (digits)
+			break;
+	}
+	return digits;
 }
 
 Integer::~Integer() {

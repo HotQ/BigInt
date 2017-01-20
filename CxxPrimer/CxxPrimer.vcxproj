@@ -140,6 +140,7 @@
   <ItemGroup>
     <ClCompile Include="demo.cpp" />
     <ClCompile Include="Integer.cpp" />
+    <ClCompile Include="Integer_arithmetic.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Integer.h" />
