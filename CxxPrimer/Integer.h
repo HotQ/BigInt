@@ -28,6 +28,7 @@ public:
 	~Integer();
 
 	friend Integer &Integer_add(const Integer &ax, const Integer &bx, Integer &lhs);
+	friend Integer &Integer_sub(const Integer &ax, const Integer &bx, Integer &lhs);
 
 };
 

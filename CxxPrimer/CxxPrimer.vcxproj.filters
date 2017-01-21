@@ -24,6 +24,9 @@
     <ClCompile Include="Integer_arithmetic.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Integer_io.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Integer.h">
