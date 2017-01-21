@@ -20,11 +20,15 @@ public:
 	void print();
 	int bidigits();
 
+	Integer& expand();
+	Integer& expand(int d);
 	Integer& reset();
 	Integer& add(const Integer &rhs);
 
 	~Integer();
-	
+
+	friend Integer &Integer_add(const Integer &ax, const Integer &bx, Integer &lhs);
+
 };
 
 #endif // !INTEGER_H_INCLUDED
