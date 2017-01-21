@@ -2,52 +2,8 @@
 #include <cstdlib>
 #include "Integer.h"
 
-Integer &Integer_add(const Integer &ax, const Integer &bx, Integer &lhs) {
-	const Integer *max, *min;
-	if (ax.byte == bx.byte) {
-		max = &ax;
-		min = &bx;
-	
-		if ((max->data)[ax.byte - 1] + (min->data)[bx.byte - 1] >= 0xfe) {
-			lhs.expand(max->byte + 1 - lhs.byte);
-		}
-		else {
-			lhs.expand(max->byte - lhs.byte);
-		}
-	}
-	else{
-		if(ax.byte > bx.byte){
-			max = &ax;
-			min = &bx;
-		}else{
-			min = &ax;
-			max = &bx;
-		}
-
-		if ((max->data)[ax.byte - 1]  >= 0xfe) {
-			lhs.expand(max->byte + 1 - lhs.byte);
-		}
-		else {
-			lhs.expand(max->byte - lhs.byte);
-		}
-	}
-
-	unsigned char CF = 0;
-	for (int i = 0; i < (int)(min->byte); i++) {
-		int temp = (int)((max->data)[i] + (min->data)[i] + CF);
-		(lhs.data)[i] = temp % 256;
-		CF = temp / 256;
-	}
-	for (int i = min->byte; i < (int)(max->byte); i++) {
-		int temp = (int)((max->data)[i] + CF);
-		(lhs.data)[i] = temp % 256;
-		CF = temp / 256;
-	}
-	if (lhs.byte > max->byte) {
-		(lhs.data)[max->byte] = CF;
-	}
-	return lhs;
-}
+Integer &Integer_add(const Integer &ax, const Integer &bx, Integer &lhs);
+Integer &Integer_sub(const Integer &ax, const Integer &bx, Integer &lhs);
 
 Integer& Integer::reset() {
 	if (this->data) {
@@ -90,4 +46,52 @@ Integer& Integer::expand(int d) {
 }
 Integer& Integer::add(const Integer &rhs) {
 	return *this;
+}
+
+Integer &Integer_add(const Integer &ax, const Integer &bx, Integer &lhs) {
+	const Integer *max, *min;
+	if (ax.byte == bx.byte) {
+		max = &ax;
+		min = &bx;
+
+		if ((max->data)[ax.byte - 1] + (min->data)[bx.byte - 1] >= 0xfe) {
+			lhs.expand(max->byte + 1 - lhs.byte);
+		}
+		else {
+			lhs.expand(max->byte - lhs.byte);
+		}
+	}
+	else {
+		if (ax.byte > bx.byte) {
+			max = &ax;
+			min = &bx;
+		}
+		else {
+			min = &ax;
+			max = &bx;
+		}
+
+		if ((max->data)[ax.byte - 1] >= 0xfe) {
+			lhs.expand(max->byte + 1 - lhs.byte);
+		}
+		else {
+			lhs.expand(max->byte - lhs.byte);
+		}
+	}
+
+	unsigned char CF = 0;
+	for (int i = 0; i < (int)(min->byte); i++) {
+		int temp = (int)((max->data)[i] + (min->data)[i] + CF);
+		(lhs.data)[i] = temp % 256;
+		CF = temp / 256;
+	}
+	for (int i = min->byte; i < (int)(max->byte); i++) {
+		int temp = (int)((max->data)[i] + CF);
+		(lhs.data)[i] = temp % 256;
+		CF = temp / 256;
+	}
+	if (lhs.byte > max->byte) {
+		(lhs.data)[max->byte] = CF;
+	}
+	return lhs;
 }

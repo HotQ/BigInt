@@ -141,6 +141,7 @@
     <ClCompile Include="demo.cpp" />
     <ClCompile Include="Integer.cpp" />
     <ClCompile Include="Integer_arithmetic.cpp" />
+    <ClCompile Include="Integer_io.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Integer.h" />
