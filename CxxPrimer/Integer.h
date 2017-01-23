@@ -16,7 +16,8 @@ public:
 	Integer();
 	Integer(int int_src);
     Integer(const char *cchr_src);
-
+	
+	/* Integer_io.cpp */
 	void print();
 	int bidigits();
 
@@ -27,9 +28,23 @@ public:
 
 	~Integer();
 
-	friend Integer &Integer_add(const Integer &ax, const Integer &bx, Integer &lhs);
-	friend Integer &Integer_sub(const Integer &ax, const Integer &bx, Integer &lhs);
+	friend Integer &Integer_add(Integer &ax, Integer &bx, Integer &lhs);
+	friend Integer &Integer_sub(Integer &ax, Integer &bx, Integer &lhs);
+
+	friend int Integer_compare_abs(Integer &ax, Integer &bx);
 
 };
+
+/*Integer_Testing */
+bool Equal(Integer &ax, Integer &bx);
+bool Unequal(Integer &ax, Integer &bx);
+bool Less(Integer &ax, Integer &bx);
+bool Greater(Integer &ax, Integer &bx);
+bool LessEqual(Integer &ax, Integer &bx);
+bool GreaterEqual(Integer &ax, Integer &bx);
+//TODO: 
+// bool	Between(Integer &x, List min_max);
+// bool	Between(Integer &x, List Lists_min_max);
+// Operator Between(List Range);
 
 #endif // !INTEGER_H_INCLUDED

@@ -21,10 +21,13 @@
     <ClCompile Include="Integer.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Integer_arithmetic.cpp">
+    <ClCompile Include="Integer_Testing.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Integer_io.cpp">
+    <ClCompile Include="Integer_IO.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Integer_Arithmetic.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>
