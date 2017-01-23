@@ -1,6 +1,6 @@
-#include <iostream>
 #include <cstdlib>
 #include <cmath>
+#include <cstring>
 #include "Integer.h"
 
 #define Log_2_10 3.3219280959
@@ -278,14 +278,8 @@ static inline void divident_sub_256(char *dividend_offset, int quotient) {
 	int CF = 0, temp;
 	for (int i = 3; i >= 0; i--) {
 		temp = dividend_offset[i] - CF - (int)product_256_nooffset[quotient][i];
-		if (temp >= 0) {
-			dividend_offset[i] = (char)temp;
-			CF = 0;
-		}
-		else {
-			dividend_offset[i] = (char)(10 + temp);
-			CF = 1;
-		}
+		CF = (temp < 0);
+		dividend_offset[i] = (char)(10*CF + temp);
 	}
 
 }

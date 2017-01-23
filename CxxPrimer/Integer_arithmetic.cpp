@@ -1,5 +1,6 @@
 #include <iostream>
 #include <cstdlib>
+#include <cmath>
 #include "Integer.h"
 
 Integer &Integer_add(const Integer &ax, const Integer &bx, Integer &lhs);
@@ -48,7 +49,7 @@ Integer& Integer::add(const Integer &rhs) {
 	return *this;
 }
 
-Integer &Integer_add(const Integer &ax, const Integer &bx, Integer &lhs) {
+Integer &Integer_add(Integer &ax, Integer &bx, Integer &lhs) {
 	const Integer *max, *min;
 	if (ax.byte == bx.byte) {
 		max = &ax;
@@ -95,3 +96,25 @@ Integer &Integer_add(const Integer &ax, const Integer &bx, Integer &lhs) {
 	}
 	return lhs;
 }
+/// ax is always bigger than bx
+Integer &Integer_sub(Integer &ax, Integer &bx, Integer &lhs) {
+	unsigned char CF = 0;
+	int temp;
+	int ax_real_byte = (int)ceil((double)(ax.bidigits()) / 8),
+		bx_real_byte = (int)ceil((double)(bx.bidigits()) / 8);
+	
+	lhs.expand(ax_real_byte - lhs.byte);
+
+	for (int i = 0; i < bx_real_byte; i++) {
+		temp = (ax.data)[i] - (bx.data)[i] - CF;
+		CF = (temp < 0);
+		(lhs.data)[i] = (char)(256 * CF + temp);
+	}
+	for (int i = bx_real_byte; i < ax_real_byte; i++) {
+		temp = (ax.data)[i] - CF;
+		CF = (temp < 0);
+		(lhs.data)[i] = (char)(256 * CF + temp);
+	}
+	return lhs;
+}
+
