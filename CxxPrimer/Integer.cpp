@@ -81,9 +81,8 @@ Integer::Integer(const char *cchr_src)
 		digits = (sizeof(int) > digits ? sizeof(int) : digits);
 
 		this->byte = digits;
-		this->data = (unsigned char *)malloc(digits);
-		for (i = 0; i < digits; i++)
-			(this->data)[i] = (unsigned char)0x00;
+		this->data = (unsigned char *)calloc(digits, sizeof(unsigned char));
+
 
 		for (i = 0; i < length; i++) {
 			j = 3 * (length - 1 - i);
@@ -106,9 +105,7 @@ Integer::Integer(const char *cchr_src)
 		digits = (sizeof(int) > digits ? sizeof(int) : digits);
 
 		this->byte = digits;
-		this->data = (unsigned char *)malloc(digits);
-		for (i = 0; i < digits; i++)
-			(this->data)[i] = (unsigned char)0x00;
+		this->data = (unsigned char *)calloc(digits, sizeof(unsigned char));
 
 		j = 0;
 		for (i = length - 1; i > 0; i -= 2)
@@ -124,24 +121,20 @@ Integer::Integer(const char *cchr_src)
 		digits = (sizeof(int) > digits ? sizeof(int) : digits);
 
 		this->byte = digits;
-		this->data = (unsigned char *)malloc(digits);
-		for (i = 0; i < digits; i++)
-			(this->data)[i] = (unsigned char)0x00;
+		this->data = (unsigned char *)calloc(digits, sizeof(unsigned char));
 
 		if(length==1){
 			(this->data)[0] = (unsigned char)(cchr_src[lengthOffset] - '0');
 		}
 		else {
 			char *dividend = (char *)malloc(length + 1),
-				*quotient = (char *)malloc(length + 1),
+				*quotient = (char *)calloc(length + 1, sizeof(char)),
 				*swap;
 
 			dividend[0] = 0;
-			quotient[0] = 0;
-			for (i = 1; i < length + 1; i++) {
+			for (i = 1; i < length + 1; i++)
 				dividend[i] = cchr_src[i - 1 + lengthOffset] - '0';
-				quotient[i] = 0;
-			}
+
 
 
 

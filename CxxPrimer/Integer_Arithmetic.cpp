@@ -32,16 +32,12 @@ Integer& Integer::expand(int d) {
 	if (d > 0) {
 		int bytes = (this->byte);
 		this->byte += d;
-		unsigned char *temp = (unsigned char *)malloc(this->byte),
-			*&src = this->data;
+		this->data = (unsigned char *)realloc(this->data, this->byte);
 
-		for (int i = 0; i < bytes; i++)
-			temp[i] = src[i];
+		
 		for (int i = bytes; i < (int)(this->byte); i++)
-			temp[i] = 0;
+			(this->data)[i] = 0;
 
-		free(src);
-		src = temp;
 	}
 	return *this;
 }
