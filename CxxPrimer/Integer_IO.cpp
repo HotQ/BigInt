@@ -73,10 +73,7 @@ int Integer::bidigits() {
 static intString* intString_init(int d) {
 	intString *p = (intString*)malloc(sizeof(intString));
 	p->digits = d;
-	p->string = (unsigned char*)malloc(d);
-	for (int i = 0; i < d; i++) {
-		(p->string)[i] = 0;
-	}
+	p->string = (unsigned char*)calloc(d, sizeof(int));
 	return p;
 }
 static intString* intString_init(int d, int int_src) {
