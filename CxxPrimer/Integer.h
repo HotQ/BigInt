@@ -1,6 +1,12 @@
 #ifndef INTEGER_H_INCLUDED
 #define INTEGER_H_INCLUDED
 
+#ifndef STDIO_H_INCLUDED
+#define STDIO_H_INCLUDED
+#include <functional>
+#endif // !STDIO_H_INCLUDED
+
+
 class Integer
 {
 public:
@@ -39,9 +45,13 @@ public:
 bool Equal(Integer &ax, Integer &bx);
 bool Unequal(Integer &ax, Integer &bx);
 bool Less(Integer &ax, Integer &bx);
-bool Greater(Integer &ax, Integer &bx);
 bool LessEqual(Integer &ax, Integer &bx);
+bool Greater(Integer &ax, Integer &bx);
 bool GreaterEqual(Integer &ax, Integer &bx);
+std::function<bool(Integer &)> LessThan(Integer &ax);
+std::function<bool(Integer &)> LessEqualThan(Integer &ax);
+std::function<bool(Integer &)> GreaterThan(Integer &ax);
+std::function<bool(Integer &)> GreaterEqualThan(Integer &ax);
 //TODO: 
 // bool	Between(Integer &x, List min_max);
 // bool	Between(Integer &x, List Lists_min_max);
