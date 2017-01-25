@@ -113,4 +113,3 @@ Integer &Integer_sub(Integer &ax, Integer &bx, Integer &lhs) {
 	}
 	return lhs;
 }
-

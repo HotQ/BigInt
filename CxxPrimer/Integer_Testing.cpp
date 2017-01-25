@@ -111,7 +111,24 @@ bool Negative(Integer &x) {
 	}
 	return NULL;
 }
-
+bool NonPositive(Integer &x) {
+	switch (Sign(x))
+	{
+	case -1:
+	case  0:return true;
+	case  1:return false;
+	}
+	return NULL;
+}
+bool NonNegative(Integer &x) {
+	switch (Sign(x))
+	{
+	case  1:
+	case  0:return true;
+	case -1:return false;
+	}
+	return NULL;
+}
 
 
 int Integer_compare_abs(Integer &ax, Integer &bx) {

@@ -23,7 +23,7 @@ public:
 	Integer(int int_src);
     Integer(const char *cchr_src);
 	
-	/* Integer_io.cpp */
+	/* Integer_io */
 	void print();
 	int bidigits();
 
@@ -56,5 +56,11 @@ std::function<bool(Integer &)> GreaterEqualThan(Integer &ax);
 // bool	Between(Integer &x, List min_max);
 // bool	Between(Integer &x, List Lists_min_max);
 // Operator Between(List Range);
+
+int Sign(Integer &x);
+bool Positive(Integer &x);
+bool Negative(Integer &x);
+bool NonPositive(Integer &x);
+bool NonNegative(Integer &x);
 
 #endif // !INTEGER_H_INCLUDED
