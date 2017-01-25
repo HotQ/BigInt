@@ -1,10 +1,10 @@
 #ifndef INTEGER_H_INCLUDED
 #define INTEGER_H_INCLUDED
 
-#ifndef STDIO_H_INCLUDED
-#define STDIO_H_INCLUDED
+#ifndef FUNCTIONAL_H_INCLUDED
+#define FUNCTIONAL_INCLUDED
 #include <functional>
-#endif // !STDIO_H_INCLUDED
+#endif // !FUNCTIONAL_INCLUDED
 
 
 class Integer
