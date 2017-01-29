@@ -140,7 +140,7 @@ int Integer_compare_abs(Integer &ax, Integer &bx) {
 		if (ax_bidigits > bx_bidigits)return axbigger;
 		else if (ax_bidigits < bx_bidigits)return bxbigger;
 		else {
-			for (int i = (int)ceil((double)ax_bidigits / 8) - 1; i >= 0; i++) {
+			for (int i = (int)ceil((double)ax_bidigits / 8) - 1; i >= 0; i--) {
 				if ((ax.data)[i] != (bx.data)[i]) {
 					if ((ax.data)[i] > (bx.data)[i])return axbigger;
 					else return bxbigger;
