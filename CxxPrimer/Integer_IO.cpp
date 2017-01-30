@@ -74,9 +74,9 @@ std::ostream& operator<<(std::ostream &os, Integer &c) {
 	return os;
 }
 std::istream& operator>>(std::istream &is, Integer &c) {
-	//std::string tempStr;
-	//is >> tempStr;
-	//c = tempStr.c_str();
+	std::string tempStr;
+	is >> tempStr;
+	c = tempStr.c_str();
 	return is;
 }
 

@@ -3,6 +3,7 @@
 #include "Integer.h"
 
 using std::cout;
+using std::cin;
 using std::endl;
 
 
@@ -20,6 +21,9 @@ int main()
 	
 	cout << "z3 = z1+z3:\t" << Integer_add(z1, z3, z3) << endl;
 	cout << "z3 = z3+z2:\t" << Integer_add(z3, z2, z3) << endl;
+
+	cin >> z1;
+	cout << z1;
 
 	return 0;
 }
