@@ -28,28 +28,48 @@ Integer::Integer() {
 	this->data = NULL;
 }
 Integer::Integer(int int_src) {
-	int bytes = (int)sizeof(int);
 	this->init = 1;
-	this->data = (unsigned char*)malloc(bytes);
+	this->data = (unsigned char*)malloc(sizeof(int));
 
-	if (int_src == 0) {
+	if (int_src == 0)
 		this->zero = 1;
-		this->data = NULL;
-	}
-	else {
+	else 
 		this->zero = 0;
-		this->byte = bytes;
 
-		if (int_src > 0)
-			this->sign = 0;
-		else {
-			this->sign = 1;
-			int_src = -int_src;
-		}
-		for (int i = 0; i < bytes; i++) {
-			data[i] = int_src % 0x100;
-			int_src = int_src >> 8;
-		}
+	this->byte = (int)sizeof(int);
+
+	if (int_src > 0)
+		this->sign = 0;
+	else {
+		this->sign = 1;
+		int_src = -int_src;
+	}
+
+	for (int i = 0; i < (int)sizeof(int); i++) {
+		data[i] = int_src % 0x100;
+		int_src = int_src >> 8;
+	}
+}
+Integer::Integer(long long int_src) {
+	this->init = 1;
+	this->data = (unsigned char*)malloc(sizeof(long long));
+	this->byte = (int)sizeof(long long);
+
+	if (int_src == 0)
+		this->zero = 1;
+	else
+		this->zero = 0;
+
+	if (int_src > 0)
+		this->sign = 0;
+	else {
+		this->sign = 1;
+		int_src = -int_src;
+	}
+
+	for (int i = 0; i < (int)sizeof(long long); i++) {
+		data[i] = int_src % 0x100;
+		int_src = int_src >> 8;
 	}
 }
 Integer::Integer(const char *cchr_src)

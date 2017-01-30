@@ -46,17 +46,22 @@ Integer& Integer::add(const Integer &rhs) {
 }
 
 Integer &Integer_add(Integer &ax, Integer &bx, Integer &lhs) {
-	const Integer *max, *min;
+	Integer *max, *min;
+	int max_byte, min_byte;
+	//std::cout << "ax address: " <<&ax << "\nbx affress: " << &bx << std::endl;
+	//std::cout << "ax bidigits: " << ax.bidigits() << "\nbx bidigits: " << bx.bidigits() << std::endl;
+	//std::cout << "ax.byte: " << ax.byte << "\nbx.byte: " << bx.byte << std::endl;
+
 	if (ax.byte == bx.byte) {
 		max = &ax;
 		min = &bx;
+		max_byte = max->byte;
+		min_byte = min->byte;
 
-		if ((max->data)[ax.byte - 1] + (min->data)[bx.byte - 1] >= 0xfe) {
+		if ((max->data)[max->byte - 1] + (min->data)[min->byte - 1] >= 0xfe) 
 			lhs.expand(max->byte + 1 - lhs.byte);
-		}
-		else {
+		else 
 			lhs.expand(max->byte - lhs.byte);
-		}
 	}
 	else {
 		if (ax.byte > bx.byte) {
@@ -68,28 +73,29 @@ Integer &Integer_add(Integer &ax, Integer &bx, Integer &lhs) {
 			max = &bx;
 		}
 
-		if ((max->data)[ax.byte - 1] >= 0xfe) {
+		max_byte = max->byte;
+		min_byte = min->byte;
+
+		if ((max->data)[max->byte - 1] >= 0xfe) 
 			lhs.expand(max->byte + 1 - lhs.byte);
-		}
-		else {
+		else 
 			lhs.expand(max->byte - lhs.byte);
-		}
 	}
 
 	unsigned char CF = 0;
-	for (int i = 0; i < (int)(min->byte); i++) {
+	for (int i = 0; i < min_byte; i++) {
 		int temp = (int)((max->data)[i] + (min->data)[i] + CF);
 		(lhs.data)[i] = temp % 256;
 		CF = temp / 256;
 	}
-	for (int i = min->byte; i < (int)(max->byte); i++) {
+	for (int i = min_byte; i < max_byte; i++) {
 		int temp = (int)((max->data)[i] + CF);
 		(lhs.data)[i] = temp % 256;
 		CF = temp / 256;
 	}
-	if (lhs.byte > max->byte) {
+	if (lhs.byte > max->byte)
 		(lhs.data)[max->byte] = CF;
-	}
+
 	return lhs;
 }
 /// ax is always bigger than bx

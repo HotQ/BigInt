@@ -21,7 +21,8 @@ private:
 public:
 	Integer();
 	Integer(int int_src);
-    Integer(const char *cchr_src);
+	Integer(long long int_src);
+	Integer(const char *cchr_src);
 	
 	/* Integer_io */
 	void print();
