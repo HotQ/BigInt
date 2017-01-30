@@ -28,24 +28,29 @@ public:
 	Integer(int int_src);
 	Integer(long long int_src);
 	Integer(const char *cchr_src);
-	
-	/* Integer_io */
+	Integer& operator=(Integer& c);
+	Integer& operator=(int int_src);
+	Integer& operator=(long long int_src);
+	Integer& operator=(const char *cchr_src);
+	~Integer();
+
+	/* Integer_IO */
 	void print();
 	int bidigits();
+
 	friend std::ostream& operator<<(std::ostream &os, Integer &c);
 	friend std::istream& operator>>(std::istream &is, Integer &c);
 
-
+	/* Integer_Arithmetic */
 	Integer& expand();
 	Integer& expand(int d);
 	Integer& reset();
 	Integer& add(const Integer &rhs);
-
-	~Integer();
-
+	
 	friend Integer &Integer_add(Integer &ax, Integer &bx, Integer &lhs);
 	friend Integer &Integer_sub(Integer &ax, Integer &bx, Integer &lhs);
 
+	/*Integer_Testing */
 	friend int Integer_compare_abs(Integer &ax, Integer &bx);
 
 };

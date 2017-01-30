@@ -181,6 +181,33 @@ Integer::Integer(const char *cchr_src)
 		}
 	}
 }
+Integer& Integer::operator=(Integer& c) {
+	free(this->data);
+	this->sign = c.sign;
+	this->zero = c.zero;
+	this->init = c.init;
+	this->byte = c.byte;
+	//this->data = c.data;
+	this->data = (unsigned char *)malloc(c.byte);
+	memcpy(this->data, c.data, c.byte);
+	
+	return *this;
+}
+Integer& Integer::operator=(int int_src) {
+	Integer temp(int_src);
+	*this = temp;
+	return *this;
+}
+Integer& Integer::operator=(long long int_src) {
+	Integer temp(int_src);
+	*this = temp;
+	return *this;
+}
+Integer& Integer::operator=(const char *cchr_src) {
+	Integer temp(cchr_src);
+	*this = temp;
+	return *this;
+}
 
 Integer::~Integer() {
 	if (this->data)
