@@ -1,4 +1,5 @@
 #include <iostream>
+#include <string>
 #include <cstdlib>
 #include <cmath>
 #include "Integer.h"
@@ -67,6 +68,16 @@ int Integer::bidigits() {
 			break;
 	}
 	return digits;
+}
+std::ostream& operator<<(std::ostream &os, Integer &c) {
+	c.print();
+	return os;
+}
+std::istream& operator>>(std::istream &is, Integer &c) {
+	//std::string tempStr;
+	//is >> tempStr;
+	//c = tempStr.c_str();
+	return is;
 }
 
 

@@ -1,10 +1,15 @@
 #ifndef INTEGER_H_INCLUDED
 #define INTEGER_H_INCLUDED
 
-#ifndef FUNCTIONAL_H_INCLUDED
+#ifndef FUNCTIONAL_INCLUDED
 #define FUNCTIONAL_INCLUDED
 #include <functional>
 #endif // !FUNCTIONAL_INCLUDED
+
+#ifndef IOSTREAM_INCLUDED
+#define IOSTREAM_INCLUDED
+#include <iostream>
+#endif // !IOSTREAM_INCLUDED
 
 
 class Integer
@@ -27,6 +32,9 @@ public:
 	/* Integer_io */
 	void print();
 	int bidigits();
+	friend std::ostream& operator<<(std::ostream &os, Integer &c);
+	friend std::istream& operator>>(std::istream &is, Integer &c);
+
 
 	Integer& expand();
 	Integer& expand(int d);
