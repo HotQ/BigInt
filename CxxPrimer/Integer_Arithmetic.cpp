@@ -80,6 +80,14 @@ Integer Plus(Integer &ax, Integer &bx) {
 
 	return result;
 }
+///a bad lazy implement
+Integer Subtract(Integer &ax, Integer &bx) {
+	bx.sign = 1 - bx.sign;
+	Integer result = Plus(ax, bx);
+	bx.sign = 1 - bx.sign;
+	
+	return result;
+}
 Integer& Integer::add(const Integer &c) {
 	return *this;
 }

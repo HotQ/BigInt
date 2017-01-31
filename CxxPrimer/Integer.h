@@ -57,6 +57,7 @@ public:
 };
 /* Integer_Arithmetic */
 Integer Plus(Integer &ax, Integer &bx);
+Integer Subtract(Integer &ax, Integer &bx);
 
 /* Integer_Testing */
 bool Equal(Integer &ax, Integer &bx);
