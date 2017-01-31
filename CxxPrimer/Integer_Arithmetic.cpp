@@ -80,6 +80,30 @@ Integer Plus(Integer &ax, Integer &bx) {
 
 	return result;
 }
+Integer Plus(Integer &ax, int bx) {
+	Integer temp = bx;
+	return Plus(ax, temp);
+}
+Integer Plus(int ax, Integer &bx) {
+	Integer temp = ax;
+	return Plus(temp, bx);
+}
+Integer Plus(int ax, int bx) {
+	Integer tax = ax, tbx = bx;
+	return Plus(tax, tbx);
+}
+Integer operator+(Integer &ax, Integer &bx) {
+	return Plus(ax, bx);
+}
+Integer operator+(Integer &ax, int bx) {
+	Integer temp = bx;
+	return Plus(ax, temp);
+}
+Integer operator+(int ax, Integer &bx) {
+	Integer temp = ax;
+	return Plus(temp, bx);
+}
+
 ///a bad lazy implement
 Integer Subtract(Integer &ax, Integer &bx) {
 	bx.sign = 1 - bx.sign;
@@ -88,6 +112,30 @@ Integer Subtract(Integer &ax, Integer &bx) {
 	
 	return result;
 }
+Integer Subtract(Integer &ax, int bx) {
+	Integer temp = bx;
+	return Subtract(ax, temp);
+}
+Integer Subtract(int ax, Integer &bx) {
+	Integer temp = ax;
+	return Subtract(temp, bx);
+}
+Integer Subtract(int ax, int bx) {
+	Integer tax = ax, tbx = bx;
+	return Subtract(tax, tbx);
+}
+Integer operator-(Integer &ax, Integer &bx) {
+	return Subtract(ax, bx);
+}
+Integer operator-(Integer &ax, int bx) {
+	Integer temp = bx;
+	return Subtract(ax, temp);
+}
+Integer operator-(int ax, Integer &bx) {
+	Integer temp = ax;
+	return Subtract(temp, bx);
+}
+
 Integer& Integer::add(const Integer &c) {
 	return *this;
 }
@@ -164,7 +212,8 @@ Integer &Integer_sub(Integer &ax, Integer &bx, Integer &lhs) {
 		CF = (temp < 0);
 		(lhs.data)[i] = (char)(256 * CF + temp);
 	}
-	if (lhs.bidigits())
+	if (lhs.zero)
 		lhs.zero = 0;
+
 	return lhs;
 }

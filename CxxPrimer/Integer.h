@@ -48,6 +48,13 @@ public:
 	Integer& reset();
 	Integer& add(const Integer &c);
 	
+	friend Integer operator+(Integer &ax, Integer &bx);
+	friend Integer operator+(Integer &ax, int bx);
+	friend Integer operator+(int ax, Integer &bx);
+	friend Integer operator-(Integer &ax, Integer &bx);
+	friend Integer operator-(Integer &ax, int bx);
+	friend Integer operator-(int ax, Integer &bx);
+
 	friend Integer &Integer_add(Integer &ax, Integer &bx, Integer &lhs);
 	friend Integer &Integer_sub(Integer &ax, Integer &bx, Integer &lhs);
 
@@ -57,7 +64,13 @@ public:
 };
 /* Integer_Arithmetic */
 Integer Plus(Integer &ax, Integer &bx);
+Integer Plus(Integer &ax, int bx);
+Integer Plus(int ax, Integer &bx);
+Integer Plus(int ax, int bx);
 Integer Subtract(Integer &ax, Integer &bx);
+Integer Subtract(Integer &ax, int bx);
+Integer Subtract(int ax, Integer &bx);
+Integer Subtract(int ax, int bx);
 
 /* Integer_Testing */
 bool Equal(Integer &ax, Integer &bx);
