@@ -50,16 +50,24 @@ Integer& Integer::expand(int d) {
 	return *this;
 }
 Integer Plus(Integer &ax, Integer &bx) {
-	if (ax.sign == bx.sign) {
-		Integer result;
-		Integer_add(ax, bx, result);
-		result.sign = ax.sign;
-
-		return result;
+	Integer result;
+	if (ax.zero == 1 || bx.zero == 1) {
+		if (ax.zero == 1)
+			result = bx;
+		else 
+			result = ax;
 	}
 	else {
+		if (ax.sign == bx.sign) {
+			Integer_add(ax, bx, result);
+			result.sign = ax.sign;
+		}
+		else {
 
+		}
 	}
+
+	return result;
 }
 Integer& Integer::add(const Integer &rhs) {
 	return *this;

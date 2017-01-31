@@ -89,7 +89,8 @@ Integer::Integer(const char *cchr_src)
 	
 	if (cchr_src[lengthOffset] == '0' && length == 1 + lengthOffset) {
 		this->zero = 1;
-		this->data = NULL;
+		this->data = (unsigned char *)malloc(sizeof(int));
+		memset(this->data, 0, sizeof(int));
 	}
 	else if (cchr_src[lengthOffset] == '0' && !(cchr_src[lengthOffset + 1] == 'x' || cchr_src[lengthOffset + 1] == 'X')) {
 		/// string to octonary
@@ -183,23 +184,31 @@ Integer::Integer(const char *cchr_src)
 	}
 }
 Integer::Integer(const Integer& c) {
-	this->sign = c.sign;
-	this->zero = c.zero;
 	this->init = c.init;
 	this->byte = c.byte;
-	this->data = (unsigned char *)malloc(c.byte);
-	memcpy(this->data, c.data, c.byte);
-}
+	if (c.init) {
+		this->sign = c.sign;
+		this->zero = c.zero;
+		this->data = (unsigned char *)malloc(c.byte);
+		memcpy(this->data, c.data, c.byte);
+	}
+	else
+		this->data = NULL;
 
+}
 Integer& Integer::operator=(Integer& c) {
 	free(this->data);
-	this->sign = c.sign;
-	this->zero = c.zero;
 	this->init = c.init;
 	this->byte = c.byte;
-	this->data = (unsigned char *)malloc(c.byte);
-	memcpy(this->data, c.data, c.byte);
-	
+	if (c.init) {
+		this->sign = c.sign;
+		this->zero = c.zero;
+		this->data = (unsigned char *)malloc(c.byte);
+		memcpy(this->data, c.data, c.byte);
+	}
+	else
+		this->data = NULL;
+
 	return *this;
 }
 Integer& Integer::operator=(int int_src) {
