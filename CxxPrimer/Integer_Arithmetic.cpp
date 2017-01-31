@@ -62,14 +62,25 @@ Integer Plus(Integer &ax, Integer &bx) {
 			Integer_add(ax, bx, result);
 			result.sign = ax.sign;
 		}
-		else {
-
-		}
+		else
+			switch (Integer_compare_abs(ax, bx)) {
+			case -1:
+				Integer_sub(bx, ax, result);
+				result.sign = bx.sign;
+				break;
+			case  1:
+				Integer_sub(ax, bx, result);
+				result.sign = ax.sign;
+				break;
+			case 0:
+				result = 0;
+				break;
+			}
 	}
 
 	return result;
 }
-Integer& Integer::add(const Integer &rhs) {
+Integer& Integer::add(const Integer &c) {
 	return *this;
 }
 
@@ -126,13 +137,13 @@ Integer &Integer_add(Integer &ax, Integer &bx, Integer &lhs) {
 
 	return lhs;
 }
-/// ax is always bigger than bx
+/// abs(ax) is always bigger than abs(bx)
 Integer &Integer_sub(Integer &ax, Integer &bx, Integer &lhs) {
 	unsigned char CF = 0;
 	int temp;
 	int ax_real_byte = (int)ceil((double)(ax.bidigits()) / 8),
 		bx_real_byte = (int)ceil((double)(bx.bidigits()) / 8);
-
+	
 	lhs.expand(ax_real_byte - lhs.byte);
 
 	for (int i = 0; i < bx_real_byte; i++) {
@@ -145,5 +156,7 @@ Integer &Integer_sub(Integer &ax, Integer &bx, Integer &lhs) {
 		CF = (temp < 0);
 		(lhs.data)[i] = (char)(256 * CF + temp);
 	}
+	if (lhs.bidigits())
+		lhs.zero = 0;
 	return lhs;
 }

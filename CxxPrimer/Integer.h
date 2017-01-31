@@ -46,7 +46,7 @@ public:
 	Integer& expand();
 	Integer& expand(int d);
 	Integer& reset();
-	Integer& add(const Integer &rhs);
+	Integer& add(const Integer &c);
 	
 	friend Integer &Integer_add(Integer &ax, Integer &bx, Integer &lhs);
 	friend Integer &Integer_sub(Integer &ax, Integer &bx, Integer &lhs);
