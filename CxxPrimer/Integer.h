@@ -28,6 +28,7 @@ public:
 	Integer(int int_src);
 	Integer(long long int_src);
 	Integer(const char *cchr_src);
+	Integer(const Integer& c);
 	Integer& operator=(Integer& c);
 	Integer& operator=(int int_src);
 	Integer& operator=(long long int_src);
@@ -54,8 +55,10 @@ public:
 	friend int Integer_compare_abs(Integer &ax, Integer &bx);
 
 };
+/* Integer_Arithmetic */
+Integer Plus(Integer &ax, Integer &bx);
 
-/*Integer_Testing */
+/* Integer_Testing */
 bool Equal(Integer &ax, Integer &bx);
 bool Unequal(Integer &ax, Integer &bx);
 bool Less(Integer &ax, Integer &bx);

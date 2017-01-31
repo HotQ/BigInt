@@ -30,16 +30,36 @@ Integer& Integer::expand() {
 }
 Integer& Integer::expand(int d) {
 	if (d > 0) {
-		int bytes = (this->byte);
-		this->byte += d;
-		this->data = (unsigned char *)realloc(this->data, this->byte);
+		if (this->init == 0) {
+			this->init = 1;
+			this->zero = 1;
+			this->sign = 0;
+			this->byte = d;
+			this->data = (unsigned char *)malloc(d * sizeof(unsigned char));
+			memset(this->data, 0, sizeof(unsigned char));
+		}
+		else {
+			int bytes = (this->byte);
+			this->byte += d;
+			this->data = (unsigned char *)realloc(this->data, this->byte);
 
-		
-		for (int i = bytes; i < (int)(this->byte); i++)
-			(this->data)[i] = 0;
-
+			for (int i = bytes; i < (int)(this->byte); i++)
+				(this->data)[i] = 0;
+		}
 	}
 	return *this;
+}
+Integer Plus(Integer &ax, Integer &bx) {
+	if (ax.sign == bx.sign) {
+		Integer result;
+		Integer_add(ax, bx, result);
+		result.sign = ax.sign;
+
+		return result;
+	}
+	else {
+
+	}
 }
 Integer& Integer::add(const Integer &rhs) {
 	return *this;
@@ -48,9 +68,6 @@ Integer& Integer::add(const Integer &rhs) {
 Integer &Integer_add(Integer &ax, Integer &bx, Integer &lhs) {
 	Integer *max, *min;
 	int max_byte, min_byte;
-	//std::cout << "ax address: " <<&ax << "\nbx affress: " << &bx << std::endl;
-	//std::cout << "ax bidigits: " << ax.bidigits() << "\nbx bidigits: " << bx.bidigits() << std::endl;
-	//std::cout << "ax.byte: " << ax.byte << "\nbx.byte: " << bx.byte << std::endl;
 
 	if (ax.byte == bx.byte) {
 		max = &ax;
@@ -58,9 +75,9 @@ Integer &Integer_add(Integer &ax, Integer &bx, Integer &lhs) {
 		max_byte = max->byte;
 		min_byte = min->byte;
 
-		if ((max->data)[max->byte - 1] + (min->data)[min->byte - 1] >= 0xfe) 
+		if ((max->data)[max->byte - 1] + (min->data)[min->byte - 1] >= 0xfe)
 			lhs.expand(max->byte + 1 - lhs.byte);
-		else 
+		else
 			lhs.expand(max->byte - lhs.byte);
 	}
 	else {
@@ -76,15 +93,16 @@ Integer &Integer_add(Integer &ax, Integer &bx, Integer &lhs) {
 		max_byte = max->byte;
 		min_byte = min->byte;
 
-		if ((max->data)[max->byte - 1] >= 0xfe) 
+		if ((max->data)[max->byte - 1] >= 0xfe)
 			lhs.expand(max->byte + 1 - lhs.byte);
-		else 
+		else
 			lhs.expand(max->byte - lhs.byte);
 	}
 
 	unsigned char CF = 0;
 	for (int i = 0; i < min_byte; i++) {
 		int temp = (int)((max->data)[i] + (min->data)[i] + CF);
+
 		(lhs.data)[i] = temp % 256;
 		CF = temp / 256;
 	}
@@ -95,6 +113,8 @@ Integer &Integer_add(Integer &ax, Integer &bx, Integer &lhs) {
 	}
 	if (lhs.byte > max->byte)
 		(lhs.data)[max->byte] = CF;
+	if (lhs.zero == 1)
+		lhs.zero = 0;
 
 	return lhs;
 }
@@ -104,7 +124,7 @@ Integer &Integer_sub(Integer &ax, Integer &bx, Integer &lhs) {
 	int temp;
 	int ax_real_byte = (int)ceil((double)(ax.bidigits()) / 8),
 		bx_real_byte = (int)ceil((double)(bx.bidigits()) / 8);
-	
+
 	lhs.expand(ax_real_byte - lhs.byte);
 
 	for (int i = 0; i < bx_real_byte; i++) {

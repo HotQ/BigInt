@@ -25,6 +25,7 @@ static inline int zero_number(char *dividend);
 
 Integer::Integer() {
 	this->init = 0;
+	this->byte = 0;
 	this->data = NULL;
 }
 Integer::Integer(int int_src) {
@@ -181,13 +182,21 @@ Integer::Integer(const char *cchr_src)
 		}
 	}
 }
+Integer::Integer(const Integer& c) {
+	this->sign = c.sign;
+	this->zero = c.zero;
+	this->init = c.init;
+	this->byte = c.byte;
+	this->data = (unsigned char *)malloc(c.byte);
+	memcpy(this->data, c.data, c.byte);
+}
+
 Integer& Integer::operator=(Integer& c) {
 	free(this->data);
 	this->sign = c.sign;
 	this->zero = c.zero;
 	this->init = c.init;
 	this->byte = c.byte;
-	//this->data = c.data;
 	this->data = (unsigned char *)malloc(c.byte);
 	memcpy(this->data, c.data, c.byte);
 	
