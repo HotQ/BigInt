@@ -29,7 +29,9 @@ public:
 	Integer(long long int_src);
 	Integer(const char *cchr_src);
 	Integer(const Integer& c);
+	Integer(Integer&& c);
 	Integer& operator=(Integer& c);
+	Integer& operator=(Integer&& c);
 	Integer& operator=(int int_src);
 	Integer& operator=(long long int_src);
 	Integer& operator=(const char *cchr_src);

@@ -4,6 +4,7 @@
 #include "Integer.h"
 
 #define Log_2_10 3.3219280959
+#define SHOWLOG
 
 static unsigned char product_256_nooffset[10][4] = {
 	{ 0,0,0,0 },
@@ -23,13 +24,19 @@ static inline void divident_sub_256(char *dividend_offset, int quotient);
 static inline int zero_number(char *dividend);
 
 
-Integer::Integer() {
-	this->init = 0;
-	this->byte = 0;
-	this->data = NULL;
+Integer::Integer()
+	:init(0), byte(0), data(nullptr)
+{
+#ifdef SHOWLOG
+	std::clog << this << "\t default" << std::endl;
+#endif // SHOWLOG
 }
-Integer::Integer(int int_src) {
-	this->init = 1;
+Integer::Integer(int int_src)
+	:init(1)
+{
+#ifdef SHOWLOG
+	std::clog << this << "\t int" << std::endl;
+#endif // SHOWLOG
 	this->data = (unsigned char*)malloc(sizeof(int));
 
 	if (int_src == 0)
@@ -51,8 +58,9 @@ Integer::Integer(int int_src) {
 		int_src = int_src >> 8;
 	}
 }
-Integer::Integer(long long int_src) {
-	this->init = 1;
+Integer::Integer(long long int_src) 
+	:init(1)
+{
 	this->data = (unsigned char*)malloc(sizeof(long long));
 	this->byte = (int)sizeof(long long);
 
@@ -74,8 +82,12 @@ Integer::Integer(long long int_src) {
 	}
 }
 Integer::Integer(const char *cchr_src)
+	:init(1)
 {
-	this->init = 1;
+#ifdef SHOWLOG
+	std::clog << this << "\t cchr" << std::endl;
+#endif // SHOWLOG
+
 	int length = (int)strlen(cchr_src),
 		lengthOffset = 0,
 		i, j;
@@ -183,7 +195,13 @@ Integer::Integer(const char *cchr_src)
 		}
 	}
 }
-Integer::Integer(const Integer& c) {
+Integer::Integer(const Integer& c)
+	:init(c.init), byte(c.byte)
+{
+#ifdef SHOWLOG
+	std::clog << this << "\t copy" << std::endl;
+#endif // SHOWLOG
+
 	this->init = c.init;
 	this->byte = c.byte;
 	if (c.init) {
@@ -196,7 +214,22 @@ Integer::Integer(const Integer& c) {
 		this->data = NULL;
 
 }
+Integer::Integer(Integer&& c)
+	: init(c.init), byte(c.byte), sign(c.sign), zero(c.zero)
+{
+#ifdef SHOWLOG
+	std::clog << this << "\t move !!!" << std::endl;
+#endif // SHOWLOG
+
+	if (c.data) {
+		this->data = c.data;
+		c.data = nullptr;
+	}
+}
 Integer& Integer::operator=(Integer& c) {
+#ifdef SHOWLOG
+	std::clog << this << "\t\t\t copy assignment" << std::endl;
+#endif // SHOWLOG
 	free(this->data);
 	this->init = c.init;
 	this->byte = c.byte;
@@ -209,6 +242,21 @@ Integer& Integer::operator=(Integer& c) {
 	else
 		this->data = NULL;
 
+	return *this;
+}
+Integer& Integer::operator=(Integer&& c) {
+#ifdef SHOWLOG
+	std::clog << this << "\t\t\t move assignment" << std::endl;
+#endif // SHOWLOG
+	this->init = c.init;
+	this->byte = c.byte;
+	if (c.init) {
+		this->sign = c.sign;
+		this->zero = c.zero;
+		this->data = c.data;
+		c.data = nullptr;
+	}
+	
 	return *this;
 }
 Integer& Integer::operator=(int int_src) {
@@ -228,6 +276,9 @@ Integer& Integer::operator=(const char *cchr_src) {
 }
 
 Integer::~Integer() {
+#ifdef SHOWLOG
+	std::clog << this << "\t\t has destroyed" << std::endl;
+#endif // SHOWLOG
 	if (this->data)
 		free(this->data);
 }
