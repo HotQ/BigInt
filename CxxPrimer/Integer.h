@@ -48,7 +48,6 @@ public:
 	Integer& expand();
 	Integer& expand(int d);
 	Integer& reset();
-	Integer& add(const Integer &c);
 	
 	friend Integer operator+(Integer &ax, Integer &bx);
 	friend Integer operator+(Integer &ax, int bx);

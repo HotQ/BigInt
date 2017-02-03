@@ -13,12 +13,12 @@ int main()
 
 
 	int b = 0x01020304;
-	Integer z1("0x01020304");
-
-	cout << endl
-		<< Integer_compare_abs(z1, 0x01020303) << endl
-		<< Integer_compare_abs(z1, 0x01020304) << endl
-		<< Integer_compare_abs(z1, 0x01020305) << endl;
+	Integer z(123), z1(1), z2(2), z3(3);
+	cout << "---------------\n\n";
+	cout << endl << z + z1 + z2 + z3 << endl;
+	cout << "---------------\n\n";
+	cout << endl << z - z1 - z2 - z3 << endl;
+	cout << "---------------\n\n";
 
 	return 0;
 }

@@ -138,7 +138,33 @@ Integer operator+(int ax, Integer &bx) {
 ///a bad lazy implement
 Integer Subtract(Integer &ax, Integer &bx) {
 	bx.sign = 1 - bx.sign;
-	Integer result = Plus(ax, bx);
+	Integer result;
+	if (ax.zero == 1 || bx.zero == 1) {
+		if (ax.zero == 1)
+			result = bx;
+		else
+			result = ax;
+	}
+	else {
+		if (ax.sign == bx.sign) {
+			Integer_add(ax, bx, result);
+			result.sign = ax.sign;
+		}
+		else
+			switch (Integer_compare_abs(ax, bx)) {
+			case -1:
+				Integer_sub(bx, ax, result);
+				result.sign = bx.sign;
+				break;
+			case  1:
+				Integer_sub(ax, bx, result);
+				result.sign = ax.sign;
+				break;
+			case 0:
+				result = 0;
+				break;
+			}
+	}
 	bx.sign = 1 - bx.sign;
 
 	return result;
@@ -167,9 +193,6 @@ Integer operator-(int ax, Integer &bx) {
 	return Subtract(temp, bx);
 }
 
-Integer& Integer::add(const Integer &c) {
-	return *this;
-}
 
 Integer &Integer_add(Integer &ax, Integer &bx, Integer &lhs) {
 	Integer *max, *min;
