@@ -8,12 +8,15 @@
 static unsigned char maskH2L[8] = { 0x80,0x40,0x20,0x10,0x08,0x04,0x02,0x01 };
 
 int Integer_compare_abs(Integer &ax, Integer &bx);
+int Integer_compare_abs(Integer &ax, int bx);
 int Integer_compare(Integer &ax, Integer &bx);
+int Integer_compare(Integer &ax, int bx);
+int Integer_compare(int ax, Integer &bx);
 
 
 ///Equality & Inequality///
 bool Equal(Integer &ax, Integer &bx) {
-	switch (Integer_compare(ax,bx))
+	switch (Integer_compare(ax, bx))
 	{
 	case -1:
 	case  1:return false;
@@ -142,12 +145,29 @@ int Integer_compare_abs(Integer &ax, Integer &bx) {
 		else {
 			for (int i = (int)ceil((double)ax_bidigits / 8) - 1; i >= 0; i--) {
 				if ((ax.data)[i] != (bx.data)[i]) {
-					if ((ax.data)[i] > (bx.data)[i])return axbigger;
+					if ((ax.data)[i] >(bx.data)[i])return axbigger;
 					else return bxbigger;
 				}
 			}
 			return equal;
 		}
+	}
+}
+int Integer_compare_abs(Integer &ax, int bx) {
+	int ax_real_byte = (int)ceil((double)(ax.bidigits()) / 8);
+	if (ax_real_byte > 4) {
+		return axbigger;
+	}
+	else {
+		for (int i = (int)sizeof(int) - 1; i >= 0; i--) {
+			unsigned char tbx = bx >> 8 * i;
+			bx = bx - ((int)tbx << (8 * i));
+			if ((ax.data)[i] != tbx) {
+				if ((ax.data)[i] > tbx)return axbigger;
+				else return bxbigger;
+			}
+		}
+		return equal;
 	}
 }
 int Integer_compare(Integer &ax, Integer &bx) {
@@ -163,4 +183,22 @@ int Integer_compare(Integer &ax, Integer &bx) {
 		else
 			return bxbigger;
 	}
+}
+int Integer_compare(Integer &ax, int bx) {
+	int bx_sign = bx >= 0 ? 0 : 1;
+	if (ax.sign == bx_sign) {
+		if (ax.sign == 0)
+			return Integer_compare_abs(ax, bx);
+		else
+			return Integer_compare_abs(ax, bx)*(-1);
+	}
+	else {
+		if (ax.sign == 0)
+			return axbigger;
+		else
+			return bxbigger;
+	}
+}
+int Integer_compare(int ax, Integer &bx) {
+	return Integer_compare(bx, ax)*(-1);
 }

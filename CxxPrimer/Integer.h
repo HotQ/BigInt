@@ -63,6 +63,7 @@ public:
 
 	/*Integer_Testing */
 	friend int Integer_compare_abs(Integer &ax, Integer &bx);
+	friend int Integer_compare_abs(Integer &ax, int bx);
 
 };
 /* Integer_Arithmetic */
