@@ -54,7 +54,7 @@ Integer Plus(Integer &ax, Integer &bx) {
 	if (ax.zero == 1 || bx.zero == 1) {
 		if (ax.zero == 1)
 			result = bx;
-		else 
+		else
 			result = ax;
 	}
 	else {
@@ -81,6 +81,38 @@ Integer Plus(Integer &ax, Integer &bx) {
 	return result;
 }
 Integer Plus(Integer &ax, int bx) {
+	Integer result;
+	if (ax.zero == 1 || bx == 0) {
+		if (ax.zero == 1)
+			result = bx;
+		else
+			result = ax;
+	}
+	else {
+		int bx_sign = (bx > 0 ? 0 : 1);
+		if (ax.sign == bx_sign) {
+			Integer_add(ax, bx, result);
+			result.sign = ax.sign;
+		}
+		//else
+			/*switch (Integer_compare_abs(ax, bx)) {
+			case -1:
+				Integer_sub(bx, ax, result);
+				result.sign = bx_sign;
+				break;
+			case  1:
+				Integer_sub(ax, bx, result);
+				result.sign = ax.sign;
+				break;
+			case 0:
+				result = 0;
+				break;
+			}*/
+	}
+
+	return result;
+}
+Integer Plus(Integer &&ax, int bx) {
 	Integer temp = bx;
 	return Plus(ax, temp);
 }
@@ -96,8 +128,7 @@ Integer operator+(Integer &ax, Integer &bx) {
 	return Plus(ax, bx);
 }
 Integer operator+(Integer &ax, int bx) {
-	Integer temp = bx;
-	return Plus(ax, temp);
+	return Plus(ax, bx);
 }
 Integer operator+(int ax, Integer &bx) {
 	Integer temp = ax;
@@ -109,7 +140,7 @@ Integer Subtract(Integer &ax, Integer &bx) {
 	bx.sign = 1 - bx.sign;
 	Integer result = Plus(ax, bx);
 	bx.sign = 1 - bx.sign;
-	
+
 	return result;
 }
 Integer Subtract(Integer &ax, int bx) {
@@ -142,52 +173,100 @@ Integer& Integer::add(const Integer &c) {
 
 Integer &Integer_add(Integer &ax, Integer &bx, Integer &lhs) {
 	Integer *max, *min;
-	int max_byte, min_byte;
+	unsigned int ax_byte = (unsigned int)ceil((double)(ax.bidigits()) / 8),
+		         bx_byte = (unsigned int)ceil((double)(bx.bidigits()) / 8),
+		         max_byte, min_byte;
 
-	if (ax.byte == bx.byte) {
+	if (ax_byte == bx_byte) {
 		max = &ax;
 		min = &bx;
-		max_byte = max->byte;
-		min_byte = min->byte;
+		max_byte = ax_byte;
+		min_byte = bx_byte;
 
-		if ((max->data)[max->byte - 1] + (min->data)[min->byte - 1] >= 0xfe)
-			lhs.expand(max->byte + 1 - lhs.byte);
+		if ((ax.data)[ax_byte - 1] + (bx.data)[bx_byte - 1] >= 0xfe)
+			lhs.expand(ax_byte + 1 - lhs.byte);
 		else
-			lhs.expand(max->byte - lhs.byte);
+			lhs.expand(ax_byte - lhs.byte);
 	}
 	else {
-		if (ax.byte > bx.byte) {
+		if (ax_byte > bx_byte) {
 			max = &ax;
 			min = &bx;
+			max_byte = ax_byte;
+			min_byte = bx_byte;
 		}
 		else {
 			min = &ax;
 			max = &bx;
+			max_byte = bx_byte;
+			min_byte = ax_byte;
 		}
 
-		max_byte = max->byte;
-		min_byte = min->byte;
-
-		if ((max->data)[max->byte - 1] >= 0xfe)
-			lhs.expand(max->byte + 1 - lhs.byte);
+		if ((max->data)[max_byte - 1] >= 0xfe)
+			lhs.expand(max_byte + 1 - lhs.byte);
 		else
-			lhs.expand(max->byte - lhs.byte);
+			lhs.expand(max_byte - lhs.byte);
 	}
 
 	unsigned char CF = 0;
-	for (int i = 0; i < min_byte; i++) {
+	for (unsigned int i = 0; i < min_byte; i++) {
 		int temp = (int)((max->data)[i] + (min->data)[i] + CF);
 
 		(lhs.data)[i] = temp % 256;
 		CF = temp / 256;
 	}
-	for (int i = min_byte; i < max_byte; i++) {
+	for (unsigned int i = min_byte; i < max_byte; i++) {
 		int temp = (int)((max->data)[i] + CF);
 		(lhs.data)[i] = temp % 256;
 		CF = temp / 256;
 	}
-	if (lhs.byte > max->byte)
-		(lhs.data)[max->byte] = CF;
+	if (lhs.byte > max_byte)
+		(lhs.data)[max_byte] = CF;
+	if (lhs.zero == 1)
+		lhs.zero = 0;
+
+	return lhs;
+}
+Integer &Integer_add(Integer &ax, int bx, Integer &lhs) {
+	unsigned int ax_byte = (int)ceil((double)(ax.bidigits()) / 8),
+		bx_byte = 4,
+		bx_last_byte;
+
+	while (bx >> 8 * (bx_byte-- - 1) == 0);
+	bx_last_byte = bx >> bx_byte * 8;
+	bx_byte++;
+
+
+	if (ax_byte == bx_byte) {
+
+		if ((ax.data)[ax_byte - 1] + bx_last_byte >= 0xfe)
+			lhs.expand(ax_byte + 1 - lhs.byte);
+		else
+			lhs.expand(ax_byte - lhs.byte);
+	}
+	else if (ax_byte > bx_byte) {
+		if ((ax.data)[ax_byte - 1] >= 0xfe)
+			lhs.expand(ax_byte + 1 - lhs.byte);
+		else
+			lhs.expand(ax_byte - lhs.byte);
+	}
+
+	unsigned char CF = 0;
+	for (unsigned int i = 0; i < bx_byte; i++) {
+
+		int temp = (int)((ax.data)[i] + bx % 256 + CF);
+
+		(lhs.data)[i] = temp % 256;
+		CF = temp / 256;
+		bx = bx / 256;
+	}
+	for (unsigned int i = bx_byte; i < ax_byte; i++) {
+		int temp = (int)((ax.data)[i] + CF);
+		(lhs.data)[i] = temp % 256;
+		CF = temp / 256;
+	}
+	if (lhs.byte > ax_byte)
+		(lhs.data)[ax_byte] = CF;
 	if (lhs.zero == 1)
 		lhs.zero = 0;
 
@@ -199,7 +278,7 @@ Integer &Integer_sub(Integer &ax, Integer &bx, Integer &lhs) {
 	int temp;
 	int ax_real_byte = (int)ceil((double)(ax.bidigits()) / 8),
 		bx_real_byte = (int)ceil((double)(bx.bidigits()) / 8);
-	
+
 	lhs.expand(ax_real_byte - lhs.byte);
 
 	for (int i = 0; i < bx_real_byte; i++) {
