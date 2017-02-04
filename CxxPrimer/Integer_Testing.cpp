@@ -257,6 +257,18 @@ std::function<bool(Integer &)> GreaterEqualThan(Integer &ax) {
 std::function<bool(Integer &)> GreaterEqualThan(int      ax) {
 	return [&](Integer &bx)-> bool { return GreaterEqual(bx, ax); };
 }
+std::function<bool(Integer &)> EqualTo(Integer &ax) {
+	return [&](Integer &bx)-> bool { return Equal(bx, ax); };
+}
+std::function<bool(Integer &)> EqualTo(int      ax) {
+	return [&](Integer &bx)-> bool { return Equal(bx, ax); };
+}
+std::function<bool(Integer &)> UnequalTo(Integer &ax) {
+	return [&](Integer &bx)-> bool { return Unequal(bx, ax); };
+}
+std::function<bool(Integer &)> UnequalTo(int      ax) {
+	return [&](Integer &bx)-> bool { return Unequal(bx, ax); };
+}
 
 int Sign(Integer &x) {
 	if (x.zero == 1)

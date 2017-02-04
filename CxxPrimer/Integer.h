@@ -135,6 +135,10 @@ std::function<bool(Integer &)> GreaterThan(Integer &ax);
 std::function<bool(Integer &)> GreaterThan(int      ax);
 std::function<bool(Integer &)> GreaterEqualThan(Integer &ax);
 std::function<bool(Integer &)> GreaterEqualThan(int      ax);
+std::function<bool(Integer &)> EqualTo(Integer &ax);
+std::function<bool(Integer &)> EqualTo(int      ax); 
+std::function<bool(Integer &)> UnequalTo(Integer &ax);
+std::function<bool(Integer &)> UnequalTo(int      ax);
 //TODO: 
 // bool	Between(Integer &x, List min_max);
 // bool	Between(Integer &x, List Lists_min_max);
