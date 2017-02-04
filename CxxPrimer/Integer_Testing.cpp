@@ -69,6 +69,25 @@ bool GreaterEqual(Integer &ax, Integer &bx) {
 	}
 	return NULL;
 }
+bool operator==(Integer &ax, Integer &bx) {
+	return Equal(ax, bx);
+}
+bool operator!=(Integer &ax, Integer &bx) {
+	return Unequal(ax, bx);
+}
+bool operator< (Integer &ax, Integer &bx) {
+	return Less(ax, bx);
+}
+bool operator<=(Integer &ax, Integer &bx) {
+	return LessEqual(ax, bx);
+}
+bool operator> (Integer &ax, Integer &bx) {
+	return Greater(ax, bx);
+}
+bool operator>=(Integer &ax, Integer &bx) {
+	return GreaterEqual(ax, bx);
+}
+
 std::function<bool(Integer &)> LessThan(Integer &ax) {
 	std::function<bool(Integer &)> Operator = std::bind(Less, std::placeholders::_1, std::ref(ax));
 	return Operator;

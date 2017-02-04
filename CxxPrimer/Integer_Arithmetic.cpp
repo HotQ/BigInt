@@ -3,7 +3,6 @@
 #include <cmath>
 #include "Integer.h"
 
-#define SHOWLOG
 
 Integer &Integer_add(Integer &ax, Integer &bx, Integer &lhs);
 Integer &Integer_add(Integer &ax, int bx, Integer &lhs);

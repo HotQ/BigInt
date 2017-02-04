@@ -3,8 +3,11 @@
 #include <cstring>
 #include "Integer.h"
 
+#ifdef SHOWLOG
+#include <iostream>
+#endif // SHOWLOG
+
 #define Log_2_10 3.3219280959
-#define SHOWLOG
 
 static unsigned char product_256_nooffset[10][4] = {
 	{ 0,0,0,0 },

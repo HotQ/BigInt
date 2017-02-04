@@ -6,11 +6,8 @@
 #include <functional>
 #endif // !FUNCTIONAL_INCLUDED
 
-#ifndef IOSTREAM_INCLUDED
-#define IOSTREAM_INCLUDED
-#include <iostream>
-#endif // !IOSTREAM_INCLUDED
 
+//#define SHOWLOG
 
 class Integer
 {
@@ -63,6 +60,13 @@ public:
 	friend Integer &Integer_sub(int ax, Integer &bx, Integer &lhs);
 
 	/*Integer_Testing */
+	friend bool operator==(Integer &ax, Integer &bx);
+	friend bool operator!=(Integer &ax, Integer &bx);
+	friend bool operator< (Integer &ax, Integer &bx);
+	friend bool operator<=(Integer &ax, Integer &bx);
+	friend bool operator> (Integer &ax, Integer &bx);
+	friend bool operator>=(Integer &ax, Integer &bx);
+
 	friend int Integer_compare_abs(Integer &ax, Integer &bx);
 	friend int Integer_compare_abs(Integer &ax, int bx);
 
@@ -77,6 +81,13 @@ Integer Subtract(Integer &ax, int bx);
 Integer Subtract(int ax, Integer &bx);
 Integer Subtract(int ax, int bx);
 
+Integer operator+(Integer &ax, Integer &bx);
+Integer operator+(Integer &ax, int bx);
+Integer operator+(int ax, Integer &bx);
+Integer operator-(Integer &ax, Integer &bx);
+Integer operator-(Integer &ax, int bx);
+Integer operator-(int ax, Integer &bx);
+
 /* Integer_Testing */
 bool Equal(Integer &ax, Integer &bx);
 bool Unequal(Integer &ax, Integer &bx);
@@ -84,6 +95,14 @@ bool Less(Integer &ax, Integer &bx);
 bool LessEqual(Integer &ax, Integer &bx);
 bool Greater(Integer &ax, Integer &bx);
 bool GreaterEqual(Integer &ax, Integer &bx);
+
+bool operator==(Integer &ax, Integer &bx);
+bool operator!=(Integer &ax, Integer &bx);
+bool operator< (Integer &ax, Integer &bx);
+bool operator<=(Integer &ax, Integer &bx);
+bool operator> (Integer &ax, Integer &bx);
+bool operator>=(Integer &ax, Integer &bx);
+
 std::function<bool(Integer &)> LessThan(Integer &ax);
 std::function<bool(Integer &)> LessEqualThan(Integer &ax);
 std::function<bool(Integer &)> GreaterThan(Integer &ax);
