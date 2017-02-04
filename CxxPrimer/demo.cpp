@@ -12,11 +12,11 @@ int main()
 {
 
 
-	Integer z("0xffffff03");
+	Integer z("0x7fffff03"), l("0x7fffff02");
 	cout << endl;
 
-	for (int i = 0; i < 30; i++)
-		cout << z << "   " << i << "\t" << z - i << "\t" << i - z << endl;
+	cout << (z > l) << "\t" << GreaterThan(l)(z) << endl;
+	cout << (z <= 1) << "\t" << (0x7fffffff > z) << endl;
 
 	return 0;
 }

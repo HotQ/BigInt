@@ -90,23 +90,51 @@ Integer operator-(int ax, Integer &bx);
 
 /* Integer_Testing */
 bool Equal(Integer &ax, Integer &bx);
+bool Equal(int      ax, Integer &bx);
+bool Equal(Integer &ax, int      bx);
 bool Unequal(Integer &ax, Integer &bx);
+bool Unequal(int      ax, Integer &bx);
+bool Unequal(Integer &ax, int      bx);
 bool Less(Integer &ax, Integer &bx);
+bool Less(int      ax, Integer &bx);
+bool Less(Integer &ax, int       bx);
 bool LessEqual(Integer &ax, Integer &bx);
+bool LessEqual(int      ax, Integer &bx);
+bool LessEqual(Integer &ax, int      bx);
 bool Greater(Integer &ax, Integer &bx);
+bool Greater(int      ax, Integer &bx);
+bool Greater(Integer &ax, int     bx);
 bool GreaterEqual(Integer &ax, Integer &bx);
+bool GreaterEqual(int      ax, Integer &bx);
+bool GreaterEqual(Integer &ax, int      bx);
 
 bool operator==(Integer &ax, Integer &bx);
+bool operator==(int      ax, Integer &bx);
+bool operator==(Integer &ax, int      bx);
 bool operator!=(Integer &ax, Integer &bx);
+bool operator!=(int      ax, Integer &bx);
+bool operator!=(Integer &ax, int      bx);
 bool operator< (Integer &ax, Integer &bx);
+bool operator< (int      ax, Integer &bx);
+bool operator< (Integer &ax, int      bx);
 bool operator<=(Integer &ax, Integer &bx);
+bool operator<=(int      ax, Integer &bx);
+bool operator<=(Integer &ax, int      bx);
 bool operator> (Integer &ax, Integer &bx);
+bool operator> (int      ax, Integer &bx);
+bool operator> (Integer &ax, int      bx);
 bool operator>=(Integer &ax, Integer &bx);
+bool operator>=(int      ax, Integer &bx);
+bool operator>=(Integer &ax, int      bx);
 
 std::function<bool(Integer &)> LessThan(Integer &ax);
+std::function<bool(Integer &)> LessThan(int     ax);
 std::function<bool(Integer &)> LessEqualThan(Integer &ax);
+std::function<bool(Integer &)> LessEqualThan(int     ax);
 std::function<bool(Integer &)> GreaterThan(Integer &ax);
+std::function<bool(Integer &)> GreaterThan(int      ax);
 std::function<bool(Integer &)> GreaterEqualThan(Integer &ax);
+std::function<bool(Integer &)> GreaterEqualThan(int      ax);
 //TODO: 
 // bool	Between(Integer &x, List min_max);
 // bool	Between(Integer &x, List Lists_min_max);

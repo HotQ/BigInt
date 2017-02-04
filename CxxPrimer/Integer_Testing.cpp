@@ -24,7 +24,43 @@ bool Equal(Integer &ax, Integer &bx) {
 	}
 	return NULL; // Does it work?
 }
+bool Equal(int      ax, Integer &bx) {
+	switch (Integer_compare(ax, bx))
+	{
+	case -1:
+	case  1:return false;
+	case  0:return true;
+	}
+	return NULL; // Does it work?
+}
+bool Equal(Integer &ax, int      bx) {
+	switch (Integer_compare(ax, bx))
+	{
+	case -1:
+	case  1:return false;
+	case  0:return true;
+	}
+	return NULL; // Does it work?
+}
 bool Unequal(Integer &ax, Integer &bx) {
+	switch (Integer_compare(ax, bx))
+	{
+	case -1:
+	case  1:return true;
+	case  0:return false;
+	}
+	return NULL;
+}
+bool Unequal(int      ax, Integer &bx) {
+	switch (Integer_compare(ax, bx))
+	{
+	case -1:
+	case  1:return true;
+	case  0:return false;
+	}
+	return NULL;
+}
+bool Unequal(Integer &ax, int      bx) {
 	switch (Integer_compare(ax, bx))
 	{
 	case -1:
@@ -42,7 +78,43 @@ bool Less(Integer &ax, Integer &bx) {
 	}
 	return NULL;
 }
+bool Less(int      ax, Integer &bx) {
+	switch (Integer_compare(ax, bx))
+	{
+	case -1:return true;
+	case  1:
+	case  0:return false;
+	}
+	return NULL;
+}
+bool Less(Integer &ax,int       bx) {
+	switch (Integer_compare(ax, bx))
+	{
+	case -1:return true;
+	case  1:
+	case  0:return false;
+	}
+	return NULL;
+}
 bool LessEqual(Integer &ax, Integer &bx) {
+	switch (Integer_compare(ax, bx))
+	{
+	case -1:
+	case  0:return true;
+	case  1:return false;
+	}
+	return NULL;
+}
+bool LessEqual(int      ax, Integer &bx) {
+	switch (Integer_compare(ax, bx))
+	{
+	case -1:
+	case  0:return true;
+	case  1:return false;
+	}
+	return NULL;
+}
+bool LessEqual(Integer &ax, int      bx) {
 	switch (Integer_compare(ax, bx))
 	{
 	case -1:
@@ -60,6 +132,24 @@ bool Greater(Integer &ax, Integer &bx) {
 	}
 	return NULL;
 }
+bool Greater(int      ax, Integer &bx) {
+	switch (Integer_compare(ax, bx))
+	{
+	case  1:return true;
+	case -1:
+	case  0:return false;
+	}
+	return NULL;
+}
+bool Greater(Integer &ax, int     bx) {
+	switch (Integer_compare(ax, bx))
+	{
+	case  1:return true;
+	case -1:
+	case  0:return false;
+	}
+	return NULL;
+}
 bool GreaterEqual(Integer &ax, Integer &bx) {
 	switch (Integer_compare(ax, bx))
 	{
@@ -69,40 +159,103 @@ bool GreaterEqual(Integer &ax, Integer &bx) {
 	}
 	return NULL;
 }
+bool GreaterEqual(int      ax, Integer &bx) {
+	switch (Integer_compare(ax, bx))
+	{
+	case  1:
+	case  0:return true;
+	case -1:return false;
+	}
+	return NULL;
+}
+bool GreaterEqual(Integer &ax, int      bx) {
+	switch (Integer_compare(ax, bx))
+	{
+	case  1:
+	case  0:return true;
+	case -1:return false;
+	}
+	return NULL;
+}
+
 bool operator==(Integer &ax, Integer &bx) {
+	return Equal(ax, bx);
+}
+bool operator==(int      ax, Integer &bx) {
+	return Equal(ax, bx);
+}
+bool operator==(Integer &ax, int      bx) {
 	return Equal(ax, bx);
 }
 bool operator!=(Integer &ax, Integer &bx) {
 	return Unequal(ax, bx);
 }
+bool operator!=(int      ax, Integer &bx) {
+	return Unequal(ax, bx);
+}
+bool operator!=(Integer &ax, int      bx) {
+	return Unequal(ax, bx);
+}
 bool operator< (Integer &ax, Integer &bx) {
+	return Less(ax, bx);
+}
+bool operator< (int      ax, Integer &bx) {
+	return Less(ax, bx);
+}
+bool operator< (Integer &ax, int      bx) {
 	return Less(ax, bx);
 }
 bool operator<=(Integer &ax, Integer &bx) {
 	return LessEqual(ax, bx);
 }
+bool operator<=(int      ax, Integer &bx) {
+	return LessEqual(ax, bx);
+}
+bool operator<=(Integer &ax, int      bx) {
+	return LessEqual(ax, bx);
+}
 bool operator> (Integer &ax, Integer &bx) {
+	return Greater(ax, bx);
+}
+bool operator> (int      ax, Integer &bx) {
+	return Greater(ax, bx);
+}
+bool operator> (Integer &ax, int      bx) {
 	return Greater(ax, bx);
 }
 bool operator>=(Integer &ax, Integer &bx) {
 	return GreaterEqual(ax, bx);
 }
+bool operator>=(int      ax, Integer &bx) {
+	return GreaterEqual(ax, bx);
+}
+bool operator>=(Integer &ax, int      bx) {
+	return GreaterEqual(ax, bx);
+}
 
 std::function<bool(Integer &)> LessThan(Integer &ax) {
-	std::function<bool(Integer &)> Operator = std::bind(Less, std::placeholders::_1, std::ref(ax));
-	return Operator;
+	return [&](Integer &bx)-> bool { return Less(bx, ax); };
+}
+std::function<bool(Integer &)> LessThan(int     ax) {
+	return [&](Integer &bx)-> bool { return Less(bx, ax); };
 }
 std::function<bool(Integer &)> LessEqualThan(Integer &ax) {
-	std::function<bool(Integer &)> Operator = std::bind(LessEqual, std::placeholders::_1, std::ref(ax));
-	return Operator;
+	return [&](Integer &bx)-> bool { return LessEqual(bx, ax); };
+}
+std::function<bool(Integer &)> LessEqualThan(int     ax) {
+	return [&](Integer &bx)-> bool { return LessEqual(bx, ax); };
 }
 std::function<bool(Integer &)> GreaterThan(Integer &ax) {
-	std::function<bool(Integer &)> Operator = std::bind(Greater, std::placeholders::_1, std::ref(ax));
-	return Operator;
+	return [&](Integer &bx)-> bool { return Greater(bx, ax); };
+}
+std::function<bool(Integer &)> GreaterThan(int      ax) {
+	return [&](Integer &bx)-> bool { return Greater(bx, ax); };
 }
 std::function<bool(Integer &)> GreaterEqualThan(Integer &ax) {
-	std::function<bool(Integer &)> Operator = std::bind(GreaterEqual, std::placeholders::_1, std::ref(ax));
-	return Operator;
+	return [&](Integer &bx)-> bool { return GreaterEqual(bx, ax); };
+}
+std::function<bool(Integer &)> GreaterEqualThan(int      ax) {
+	return [&](Integer &bx)-> bool { return GreaterEqual(bx, ax); };
 }
 
 int Sign(Integer &x) {
