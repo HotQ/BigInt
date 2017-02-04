@@ -12,13 +12,11 @@ int main()
 {
 
 
-	int b = 0x01020304;
-	Integer z(123), z1(1), z2(2), z3(3);
-	cout << "---------------\n\n";
-	cout << endl << z + z1 + z2 + z3 << endl;
-	cout << "---------------\n\n";
-	cout << endl << z - z1 - z2 - z3 << endl;
-	cout << "---------------\n\n";
+	Integer z("0xffffff03");
+	cout << endl;
+
+	for (int i = 0; i < 30; i++)
+		cout << z << "   " << i << "\t" << z - i << "\t" << i - z << endl;
 
 	return 0;
 }

@@ -3,8 +3,13 @@
 #include <cmath>
 #include "Integer.h"
 
-Integer &Integer_add(const Integer &ax, const Integer &bx, Integer &lhs);
-Integer &Integer_sub(const Integer &ax, const Integer &bx, Integer &lhs);
+#define SHOWLOG
+
+Integer &Integer_add(Integer &ax, Integer &bx, Integer &lhs);
+Integer &Integer_add(Integer &ax, int bx, Integer &lhs);
+Integer &Integer_sub(Integer &ax, Integer &bx, Integer &lhs);
+Integer &Integer_sub(Integer &ax, int bx, Integer &lhs);
+Integer &Integer_sub(int ax, Integer &bx, Integer &lhs);
 
 Integer& Integer::reset() {
 	if (this->data) {
@@ -30,6 +35,8 @@ Integer& Integer::expand() {
 }
 Integer& Integer::expand(int d) {
 	if (d > 0) {
+		if (this->byte + d < sizeof(int))
+			d = sizeof(int) - this->byte;
 		if (this->init == 0) {
 			this->init = 1;
 			this->zero = 1;
@@ -37,6 +44,9 @@ Integer& Integer::expand(int d) {
 			this->byte = d;
 			this->data = (unsigned char *)malloc(d * sizeof(unsigned char));
 			memset(this->data, 0, sizeof(unsigned char));
+#ifdef SHOWLOG
+			std::clog << this << "\t\t\t  malloc " << d << " byte" << std::endl;
+#endif // SHOWLOG
 		}
 		else {
 			int bytes = (this->byte);
@@ -45,19 +55,23 @@ Integer& Integer::expand(int d) {
 
 			for (int i = bytes; i < (int)(this->byte); i++)
 				(this->data)[i] = 0;
+#ifdef SHOWLOG
+			std::clog << this << "\t\t\t realloc +" << d << " byte" << std::endl;
+#endif // SHOWLOG
 		}
 	}
 	return *this;
 }
 Integer Plus(Integer &ax, Integer &bx) {
-	Integer result;
 	if (ax.zero == 1 || bx.zero == 1) {
 		if (ax.zero == 1)
-			result = bx;
+			return bx;
 		else
-			result = ax;
+			return ax;
 	}
 	else {
+		Integer result;
+
 		if (ax.sign == bx.sign) {
 			Integer_add(ax, bx, result);
 			result.sign = ax.sign;
@@ -76,26 +90,27 @@ Integer Plus(Integer &ax, Integer &bx) {
 				result = 0;
 				break;
 			}
+		return result;
 	}
-
-	return result;
 }
 Integer Plus(Integer &ax, int bx) {
-	Integer result;
 	if (ax.zero == 1 || bx == 0) {
 		if (ax.zero == 1)
-			result = bx;
+			return bx;
 		else
-			result = ax;
+			return ax;
 	}
 	else {
+		Integer result;
 		int bx_sign = (bx > 0 ? 0 : 1);
+		if (bx < 0)
+			bx = -bx;
 		if (ax.sign == bx_sign) {
 			Integer_add(ax, bx, result);
 			result.sign = ax.sign;
 		}
-		//else
-			/*switch (Integer_compare_abs(ax, bx)) {
+		else
+			switch (Integer_compare_abs(ax, bx)) {
 			case -1:
 				Integer_sub(bx, ax, result);
 				result.sign = bx_sign;
@@ -105,20 +120,42 @@ Integer Plus(Integer &ax, int bx) {
 				result.sign = ax.sign;
 				break;
 			case 0:
-				result = 0;
+				return 0;
 				break;
-			}*/
+			}
+		return result;
 	}
-
-	return result;
 }
-Integer Plus(Integer &&ax, int bx) {
-	Integer temp = bx;
-	return Plus(ax, temp);
-}
-Integer Plus(int ax, Integer &bx) {
-	Integer temp = ax;
-	return Plus(temp, bx);
+Integer Plus(int bx, Integer &ax) {
+	if (ax.zero == 1 || bx == 0) {
+		if (ax.zero == 1)
+			return bx;
+		else
+			return ax;
+	}
+	else {
+		Integer result;
+		int bx_sign = (bx > 0 ? 0 : 1);
+		if (ax.sign == bx_sign) {
+			Integer_add(ax, bx, result);
+			result.sign = ax.sign;
+		}
+		else
+			switch (Integer_compare_abs(ax, bx)) {
+			case -1:
+				Integer_sub(bx, ax, result);
+				result.sign = bx_sign;
+				break;
+			case  1:
+				Integer_sub(ax, bx, result);
+				result.sign = ax.sign;
+				break;
+			case 0:
+				return 0;
+				break;
+			}
+		return result;
+	}
 }
 Integer Plus(int ax, int bx) {
 	Integer tax = ax, tbx = bx;
@@ -131,8 +168,7 @@ Integer operator+(Integer &ax, int bx) {
 	return Plus(ax, bx);
 }
 Integer operator+(int ax, Integer &bx) {
-	Integer temp = ax;
-	return Plus(temp, bx);
+	return Plus(ax, bx);
 }
 
 ///a bad lazy implement
@@ -170,35 +206,63 @@ Integer Subtract(Integer &ax, Integer &bx) {
 	return result;
 }
 Integer Subtract(Integer &ax, int bx) {
-	Integer temp = bx;
-	return Subtract(ax, temp);
+	return Plus(ax, -bx);
 }
-Integer Subtract(int ax, Integer &bx) {
-	Integer temp = ax;
-	return Subtract(temp, bx);
+Integer Subtract(int bx, Integer &ax) {
+	if (ax.zero == 1 || bx == 0) {
+		if (ax.zero == 1)
+			return -bx;
+		else {
+			Integer result = ax;
+			result.sign = 1 - result.sign;
+			return ax;
+		}
+	}
+	else {
+		Integer result;
+		ax.sign = 1 - ax.sign;
+		int bx_sign = (bx > 0 ? 0 : 1);
+		if (ax.sign == bx_sign) {
+			Integer_add(ax, bx, result);
+			result.sign = ax.sign;
+		}
+		else
+			switch (Integer_compare_abs(ax, bx)) {
+			case -1:
+				Integer_sub(bx, ax, result);
+				result.sign = bx_sign;
+				break;
+			case  1:
+				Integer_sub(ax, bx, result);
+				result.sign = ax.sign;
+				break;
+			case 0:
+				return 0;
+				break;
+			}
+		ax.sign = 1 - ax.sign;
+		return result;
+	}
 }
 Integer Subtract(int ax, int bx) {
-	Integer tax = ax, tbx = bx;
-	return Subtract(tax, tbx);
+	return ax - bx;
 }
 Integer operator-(Integer &ax, Integer &bx) {
 	return Subtract(ax, bx);
 }
 Integer operator-(Integer &ax, int bx) {
-	Integer temp = bx;
-	return Subtract(ax, temp);
+	return Subtract(ax, bx);
 }
 Integer operator-(int ax, Integer &bx) {
-	Integer temp = ax;
-	return Subtract(temp, bx);
+	return Subtract(ax, bx);
 }
 
 
 Integer &Integer_add(Integer &ax, Integer &bx, Integer &lhs) {
 	Integer *max, *min;
 	unsigned int ax_byte = (unsigned int)ceil((double)(ax.bidigits()) / 8),
-		         bx_byte = (unsigned int)ceil((double)(bx.bidigits()) / 8),
-		         max_byte, min_byte;
+		bx_byte = (unsigned int)ceil((double)(bx.bidigits()) / 8),
+		max_byte, min_byte;
 
 	if (ax_byte == bx_byte) {
 		max = &ax;
@@ -313,6 +377,46 @@ Integer &Integer_sub(Integer &ax, Integer &bx, Integer &lhs) {
 		temp = (ax.data)[i] - CF;
 		CF = (temp < 0);
 		(lhs.data)[i] = (char)(256 * CF + temp);
+	}
+	if (lhs.zero)
+		lhs.zero = 0;
+
+	return lhs;
+}
+Integer &Integer_sub(Integer &ax, int bx, Integer &lhs) {
+	unsigned char CF = 0;
+	int temp;
+	int ax_real_byte = (int)ceil((double)(ax.bidigits()) / 8);
+
+	lhs.expand(ax_real_byte - lhs.byte);
+
+	for (int i = 0; i < sizeof(int); i++) {
+		temp = (ax.data)[i] - bx % 256 - CF;
+		CF = (temp < 0);
+		(lhs.data)[i] = (char)(256 * CF + temp);
+		bx /= 256;
+	}
+	for (int i = sizeof(int); i < ax_real_byte; i++) {
+		temp = (ax.data)[i] - CF;
+		CF = (temp < 0);
+		(lhs.data)[i] = (char)(256 * CF + temp);
+	}
+	if (lhs.zero)
+		lhs.zero = 0;
+
+	return lhs;
+}
+Integer &Integer_sub(int ax, Integer &bx, Integer &lhs) {
+	unsigned char CF = 0;
+	int temp;
+
+	lhs.expand(sizeof(int) - lhs.byte);
+
+	for (int i = 0; i < sizeof(int); i++) {
+		temp = ax % 256 - (bx.data)[i] - CF;
+		CF = (temp < 0);
+		(lhs.data)[i] = (char)(256 * CF + temp);
+		ax /= 256;
 	}
 	if (lhs.zero)
 		lhs.zero = 0;

@@ -59,6 +59,8 @@ public:
 	friend Integer &Integer_add(Integer &ax, Integer &bx, Integer &lhs);
 	friend Integer &Integer_add(Integer &ax, int bx, Integer &lhs);
 	friend Integer &Integer_sub(Integer &ax, Integer &bx, Integer &lhs);
+	friend Integer &Integer_sub(Integer &ax, int bx, Integer &lhs);
+	friend Integer &Integer_sub(int ax, Integer &bx, Integer &lhs);
 
 	/*Integer_Testing */
 	friend int Integer_compare_abs(Integer &ax, Integer &bx);
@@ -68,7 +70,6 @@ public:
 /* Integer_Arithmetic */
 Integer Plus(Integer &ax, Integer &bx);
 Integer Plus(Integer &ax, int bx);
-Integer Plus(Integer &&ax, int bx);
 Integer Plus(int ax, Integer &bx);
 Integer Plus(int ax, int bx);
 Integer Subtract(Integer &ax, Integer &bx);

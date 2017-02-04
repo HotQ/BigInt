@@ -278,9 +278,9 @@ Integer& Integer::operator=(const char *cchr_src) {
 Integer::~Integer() {
 #ifdef SHOWLOG
 	if(this->data)
-		std::clog << this << "\t!\t has destroyed" << std::endl;
+		std::clog << this << "\t\t ! has destroyed" << std::endl;
 	else
-		std::clog << this << "\t\t has destroyed" << std::endl;
+		std::clog << this << "\t\t ~ has destroyed" << std::endl;
 #endif // SHOWLOG
 	if (this->data)
 		free(this->data);
