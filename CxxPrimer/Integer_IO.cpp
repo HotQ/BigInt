@@ -82,10 +82,18 @@ std::istream& operator>>(std::istream &is, Integer &c) {
 
 
 static intString* intString_init(int d) {
-	intString *p = (intString*)malloc(sizeof(intString));
-	p->digits = d;
-	p->string = (unsigned char*)calloc(d, sizeof(int));
-	return p;
+	intString *p;
+	auto temp1 = (intString*)malloc(sizeof(intString));
+	auto temp2 = (unsigned char*)calloc(d, sizeof(int));
+	if (temp1) {
+		p = temp1;
+		if (temp2) {
+			p->string = temp2;
+			p->digits = d;
+		}
+		return p;
+	}
+	return nullptr;
 }
 static intString* intString_init(int d, int int_src) {
 	intString *result = intString_init(d);

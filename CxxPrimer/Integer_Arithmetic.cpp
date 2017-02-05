@@ -14,16 +14,19 @@ Integer& Integer::reset() {
 	if (this->data) {
 		if (this->byte != 4) {
 			free(this->data);
-			this->byte = sizeof(int);
-			this->data = (unsigned char *)malloc(sizeof(int));
+			auto temp = (unsigned char *)malloc(sizeof(int));
+			if (temp) {
+				this->data = temp;
+				this->byte = sizeof(int);
+			}
 		}
 	}
 	else {
-		this->byte = sizeof(int);
-		this->data = (unsigned char *)malloc(sizeof(int));
-	}
-	for (int i = 0; i < (int)sizeof(int); i++) {
-		(this->data)[i] = (unsigned char)0;
+		auto temp = (unsigned char *)calloc(sizeof(unsigned char), sizeof(int));
+		if (temp) {
+			this->data = temp;
+			this->byte = sizeof(int);
+		}
 	}
 	this->zero = 1;
 	this->init = 1;
@@ -40,9 +43,12 @@ Integer& Integer::expand(int d) {
 			this->init = 1;
 			this->zero = 1;
 			this->sign = 0;
-			this->byte = d;
-			this->data = (unsigned char *)malloc(d * sizeof(unsigned char));
-			memset(this->data, 0, sizeof(unsigned char));
+			auto temp = (unsigned char *)malloc(d * sizeof(unsigned char));
+			if (temp) {
+				this->data = temp;
+				this->byte = d;
+				memset(this->data, 0, d * sizeof(unsigned char));
+			}
 #ifdef SHOWLOG
 			std::clog << this << "\t\t\t  malloc " << d << " byte" << std::endl;
 #endif // SHOWLOG
@@ -50,10 +56,13 @@ Integer& Integer::expand(int d) {
 		else {
 			int bytes = (this->byte);
 			this->byte += d;
-			this->data = (unsigned char *)realloc(this->data, this->byte);
-
-			for (int i = bytes; i < (int)(this->byte); i++)
-				(this->data)[i] = 0;
+			if (this->data) {
+				auto temp = (unsigned char *)realloc(this->data, this->byte);
+				if (temp) {
+					this->data = temp;
+					memset(this->data, 0, this->byte);
+				}
+			}
 #ifdef SHOWLOG
 			std::clog << this << "\t\t\t realloc +" << d << " byte" << std::endl;
 #endif // SHOWLOG

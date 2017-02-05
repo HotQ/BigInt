@@ -40,11 +40,13 @@ Integer::Integer(int int_src)
 #ifdef SHOWLOG
 	std::clog << this << "\t int" << std::endl;
 #endif // SHOWLOG
-	this->data = (unsigned char*)malloc(sizeof(int));
+	auto temp = (unsigned char*)malloc(sizeof(int));
+	if (temp)
+		this->data = temp;
 
 	if (int_src == 0)
 		this->zero = 1;
-	else 
+	else
 		this->zero = 0;
 
 	this->byte = (int)sizeof(int);
@@ -61,10 +63,12 @@ Integer::Integer(int int_src)
 		int_src = int_src >> 8;
 	}
 }
-Integer::Integer(long long int_src) 
+Integer::Integer(long long int_src)
 	:init(1)
 {
-	this->data = (unsigned char*)malloc(sizeof(long long));
+	auto temp = (unsigned char*)malloc(sizeof(int));
+	if (temp)
+		this->data = temp;
 	this->byte = (int)sizeof(long long);
 
 	if (int_src == 0)
@@ -99,9 +103,9 @@ Integer::Integer(const char *cchr_src)
 		this->sign = 1;
 		lengthOffset++;
 	}
-	else 
+	else
 		this->sign = 0;
-	
+
 	if (cchr_src[lengthOffset] == '0' && length == 1 + lengthOffset) {
 		this->zero = 1;
 		this->data = (unsigned char *)malloc(sizeof(int));
@@ -109,7 +113,7 @@ Integer::Integer(const char *cchr_src)
 	}
 	else if (cchr_src[lengthOffset] == '0' && !(cchr_src[lengthOffset + 1] == 'x' || cchr_src[lengthOffset + 1] == 'X')) {
 		/// string to octonary
-		
+
 		lengthOffset++;
 		length -= lengthOffset;
 		const char * str_src = cchr_src + lengthOffset;
@@ -157,16 +161,26 @@ Integer::Integer(const char *cchr_src)
 		int digits = (int)ceil((double)length* Log_2_10 / 8);
 		digits = (sizeof(int) > digits ? sizeof(int) : digits);
 
-		this->byte = digits;
-		this->data = (unsigned char *)calloc(digits, sizeof(unsigned char));
+		auto temp = (unsigned char *)calloc(digits, sizeof(unsigned char));
+		if (temp) {
+			this->data = temp;
+			this->byte = digits;
+		}
 
-		if(length==1){
+		if (length == 1) {
 			(this->data)[0] = (unsigned char)(cchr_src[lengthOffset] - '0');
 		}
-		else {
-			char *dividend = (char *)malloc(length + 1),
-				*quotient = (char *)calloc(length + 1, sizeof(char)),
+		else if (length>1) {
+
+			char *dividend = nullptr,
+				*quotient = nullptr,
 				*swap;
+			auto temp = (char *)malloc(length + 1);
+			if (temp)
+				dividend = temp;
+			temp = (char *)calloc(length + 1, sizeof(char));
+			if (temp)
+				quotient = temp;
 
 			dividend[0] = 0;
 			for (i = 1; i < length + 1; i++)
@@ -193,8 +207,10 @@ Integer::Integer(const char *cchr_src)
 
 			}
 			(this->data)[j++] = (unsigned char)(100 * dividend[length - 2] + 10 * dividend[length - 1] + dividend[length]);
-			free(dividend);
-			free(quotient);
+			if (dividend)
+				free(dividend);
+			if (quotient)
+				free(quotient);
 		}
 	}
 }
@@ -210,12 +226,17 @@ Integer::Integer(const Integer& c)
 	if (c.init) {
 		this->sign = c.sign;
 		this->zero = c.zero;
-		this->data = (unsigned char *)malloc(c.byte);
-		memcpy(this->data, c.data, c.byte);
+		if (c.byte) {
+			this->data = (unsigned char *)malloc(c.byte);
+			if (this->data)
+				memcpy(this->data, c.data, c.byte);
+		}
+		else
+			this->data = NULL;
+
 	}
 	else
 		this->data = NULL;
-
 }
 Integer::Integer(Integer&& c)
 	: init(c.init), byte(c.byte), sign(c.sign), zero(c.zero)
@@ -239,8 +260,13 @@ Integer& Integer::operator=(Integer& c) {
 	if (c.init) {
 		this->sign = c.sign;
 		this->zero = c.zero;
-		this->data = (unsigned char *)malloc(c.byte);
-		memcpy(this->data, c.data, c.byte);
+		if (c.byte) {
+			this->data = (unsigned char *)malloc(c.byte);
+			if (this->data)
+				memcpy(this->data, c.data, c.byte);
+		}
+		else
+			this->data = NULL;
 	}
 	else
 		this->data = NULL;
@@ -259,7 +285,7 @@ Integer& Integer::operator=(Integer&& c) {
 		this->data = c.data;
 		c.data = nullptr;
 	}
-	
+
 	return *this;
 }
 Integer& Integer::operator=(int int_src) {
@@ -280,7 +306,7 @@ Integer& Integer::operator=(const char *cchr_src) {
 
 Integer::~Integer() {
 #ifdef SHOWLOG
-	if(this->data)
+	if (this->data)
 		std::clog << this << "\t\t ! has destroyed" << std::endl;
 	else
 		std::clog << this << "\t\t ~ has destroyed" << std::endl;
@@ -394,7 +420,7 @@ static inline void divident_sub_256(char *dividend_offset, int quotient) {
 	for (int i = 3; i >= 0; i--) {
 		temp = dividend_offset[i] - CF - (int)product_256_nooffset[quotient][i];
 		CF = (temp < 0);
-		dividend_offset[i] = (char)(10*CF + temp);
+		dividend_offset[i] = (char)(10 * CF + temp);
 	}
 
 }
