@@ -280,24 +280,24 @@ Integer Times(Integer &ax, Integer &bx) {
 
 	for (a = 0; a < ax_real_byte - 1; a += 2) {
 		for (b = 0; b < bx_real_byte - 1; b += 2) {
-			unsigned int sum = ((ax.data)[a + 1] * 256 + (ax.data)[a])*((bx.data)[b + 1] * 256 + (bx.data)[b]),
+			unsigned int sum = (ax[a + 1] * 256 + ax[a])*(bx[b + 1] * 256 + bx[b]),
 				CF = 0;
 			AddToResult(result, sum, a + b);
 		}
 	}
 	if (a == ax_real_byte - 1) {
 		for (b2 = 0; b2 < bx_real_byte - 2; b2 += 3) {
-			unsigned int sum = (ax.data)[a] * ((bx.data)[b2 + 2] * 65536 + (bx.data)[b2 + 1] * 256 + (bx.data)[b2]);
+			unsigned int sum = ax[a] * (bx[b2 + 2] * 65536 + bx[b2 + 1] * 256 + bx[b2]);
 			AddToResult(result, sum, a + b2);
 		}
 		if (bx_real_byte - b2 != 0) {
 			unsigned int sum;
 			switch (bx_real_byte - b2) {
 			case 1:
-				sum = (bx.data)[b2] * (ax.data)[a];
+				sum = bx[b2] * ax[a];
 				break;
 			case 2:
-				sum = ((bx.data)[b2] + (bx.data)[b2 + 1] * 256) * (ax.data)[a];
+				sum = (bx[b2] + bx[b2 + 1] * 256) * ax[a];
 				break;
 			}
 			AddToResult(result, sum, a + b2);
@@ -305,7 +305,7 @@ Integer Times(Integer &ax, Integer &bx) {
 	}
 	if (b == bx_real_byte - 1) {
 		for (int i = 0; i < ax_real_byte - 1; i += 2) {
-			unsigned int sum = ((ax.data)[i + 1] * 256 + (ax.data)[i])*  (bx.data)[b];
+			unsigned int sum = (ax[i + 1] * 256 + ax[i])*  bx[b];
 			AddToResult(result, sum, b + i);
 		}
 	}
@@ -324,7 +324,7 @@ Integer &Integer_add(Integer &ax, Integer &bx, Integer &lhs) {
 		max_byte = ax_byte;
 		min_byte = bx_byte;
 
-		if ((ax.data)[ax_byte - 1] + (bx.data)[bx_byte - 1] >= 0xfe)
+		if (ax[ax_byte - 1] + bx[bx_byte - 1] >= 0xfe)
 			lhs.expand(ax_byte + 1 - lhs.byte);
 		else
 			lhs.expand(ax_byte - lhs.byte);
@@ -352,16 +352,16 @@ Integer &Integer_add(Integer &ax, Integer &bx, Integer &lhs) {
 	unsigned char CF = 0;
 	for (unsigned int i = 0; i < min_byte; i++) {
 		int temp = (int)((max->data)[i] + (min->data)[i] + CF);
-		(lhs.data)[i] = temp % 256;
+		lhs[i] = temp % 256;
 		CF = temp / 256;
 	}
 	for (unsigned int i = min_byte; i < max_byte; i++) {
 		int temp = (int)((max->data)[i] + CF);
-		(lhs.data)[i] = temp % 256;
+		lhs[i] = temp % 256;
 		CF = temp / 256;
 	}
 	if (lhs.byte > max_byte)
-		(lhs.data)[max_byte] = CF;
+		lhs[max_byte] = CF;
 	if (lhs.zero == 1)
 		lhs.zero = 0;
 
@@ -379,13 +379,13 @@ Integer &Integer_add(Integer &ax, int bx, Integer &lhs) {
 
 	if (ax_byte == bx_byte) {
 
-		if ((ax.data)[ax_byte - 1] + bx_last_byte >= 0xfe)
+		if (ax[ax_byte - 1] + bx_last_byte >= 0xfe)
 			lhs.expand(ax_byte + 1 - lhs.byte);
 		else
 			lhs.expand(ax_byte - lhs.byte);
 	}
 	else if (ax_byte > bx_byte) {
-		if ((ax.data)[ax_byte - 1] >= 0xfe)
+		if (ax[ax_byte - 1] >= 0xfe)
 			lhs.expand(ax_byte + 1 - lhs.byte);
 		else
 			lhs.expand(ax_byte - lhs.byte);
@@ -394,19 +394,19 @@ Integer &Integer_add(Integer &ax, int bx, Integer &lhs) {
 	unsigned char CF = 0;
 	for (unsigned int i = 0; i < bx_byte; i++) {
 
-		int temp = (int)((ax.data)[i] + bx % 256 + CF);
+		int temp = (int)(ax[i] + bx % 256 + CF);
 
-		(lhs.data)[i] = temp % 256;
+		lhs[i] = temp % 256;
 		CF = temp / 256;
 		bx = bx / 256;
 	}
 	for (unsigned int i = bx_byte; i < ax_byte; i++) {
-		int temp = (int)((ax.data)[i] + CF);
-		(lhs.data)[i] = temp % 256;
+		int temp = (int)(ax[i] + CF);
+		lhs[i] = temp % 256;
 		CF = temp / 256;
 	}
 	if (lhs.byte > ax_byte)
-		(lhs.data)[ax_byte] = CF;
+		lhs[ax_byte] = CF;
 	if (lhs.zero == 1)
 		lhs.zero = 0;
 
@@ -422,14 +422,14 @@ Integer &Integer_sub(Integer &ax, Integer &bx, Integer &lhs) {
 	lhs.expand(ax_real_byte - lhs.byte);
 
 	for (int i = 0; i < bx_real_byte; i++) {
-		temp = (ax.data)[i] - (bx.data)[i] - CF;
+		temp = ax[i] - bx[i] - CF;
 		CF = (temp < 0);
-		(lhs.data)[i] = (char)(256 * CF + temp);
+		lhs[i] = (char)(256 * CF + temp);
 	}
 	for (int i = bx_real_byte; i < ax_real_byte; i++) {
-		temp = (ax.data)[i] - CF;
+		temp = ax[i] - CF;
 		CF = (temp < 0);
-		(lhs.data)[i] = (char)(256 * CF + temp);
+		lhs[i] = (char)(256 * CF + temp);
 	}
 	if (lhs.zero)
 		lhs.zero = 0;
@@ -444,15 +444,15 @@ Integer &Integer_sub(Integer &ax, int bx, Integer &lhs) {
 	lhs.expand(ax_real_byte - lhs.byte);
 
 	for (int i = 0; i < sizeof(int); i++) {
-		temp = (ax.data)[i] - bx % 256 - CF;
+		temp = ax[i] - bx % 256 - CF;
 		CF = (temp < 0);
-		(lhs.data)[i] = (char)(256 * CF + temp);
+		lhs[i] = (char)(256 * CF + temp);
 		bx /= 256;
 	}
 	for (int i = sizeof(int); i < ax_real_byte; i++) {
-		temp = (ax.data)[i] - CF;
+		temp = ax[i] - CF;
 		CF = (temp < 0);
-		(lhs.data)[i] = (char)(256 * CF + temp);
+		lhs[i] = (char)(256 * CF + temp);
 	}
 	if (lhs.zero)
 		lhs.zero = 0;
@@ -466,9 +466,9 @@ Integer &Integer_sub(int ax, Integer &bx, Integer &lhs) {
 	lhs.expand(sizeof(int) - lhs.byte);
 
 	for (int i = 0; i < sizeof(int); i++) {
-		temp = ax % 256 - (bx.data)[i] - CF;
+		temp = ax % 256 - bx[i] - CF;
 		CF = (temp < 0);
-		(lhs.data)[i] = (char)(256 * CF + temp);
+		lhs[i] = (char)(256 * CF + temp);
 		ax /= 256;
 	}
 	if (lhs.zero)
@@ -480,15 +480,15 @@ static void AddToResult(Integer &result, unsigned int sum, int index) {
 	int i = index;
 	unsigned CF = 0;
 	while (sum) {
-		unsigned int temp = (result.data)[i] + sum % 256 + CF;
-		(result.data)[i] = temp % 256;
+		unsigned int temp = result[i] + sum % 256 + CF;
+		result[i] = temp % 256;
 		CF = temp / 256;
 		sum = sum / 256;
 		i++;
 	}
 	while (CF) {
-		unsigned int temp = (result.data)[i] + CF;
-		(result.data)[i] = temp % 256;
+		unsigned int temp = result[i] + CF;
+		result[i] = temp % 256;
 		CF = temp / 256;
 		i++;
 	}

@@ -21,6 +21,7 @@ private:
 	unsigned char *data;
 
 public:
+	/* Integer */
 	Integer();
 	Integer(int int_src);
 	Integer(long long int_src);
@@ -34,6 +35,8 @@ public:
 	Integer& operator=(const char *cchr_src);
 	~Integer();
 
+	unsigned char & operator[](int index) { return (this->data)[index]; }
+
 	/* Integer_IO */
 	void print();
 	int bidigits();
@@ -45,7 +48,7 @@ public:
 	Integer& expand();
 	Integer& expand(int d);
 	Integer& reset();
-	
+
 	friend Integer operator+(Integer &ax, Integer &bx);
 	friend Integer operator+(Integer &ax, int bx);
 	friend Integer operator+(int ax, Integer &bx);
@@ -60,7 +63,6 @@ public:
 	friend Integer &Integer_sub(int ax, Integer &bx, Integer &lhs);
 
 	friend Integer Times(Integer &ax, Integer &bx);
-	friend static void AddToResult(Integer &result, unsigned int sum, int index);
 
 	/*Integer_Testing */
 	friend bool operator==(Integer &ax, Integer &bx);
@@ -141,7 +143,7 @@ std::function<bool(Integer &)> GreaterThan(int      ax);
 std::function<bool(Integer &)> GreaterEqualThan(Integer &ax);
 std::function<bool(Integer &)> GreaterEqualThan(int      ax);
 std::function<bool(Integer &)> EqualTo(Integer &ax);
-std::function<bool(Integer &)> EqualTo(int      ax); 
+std::function<bool(Integer &)> EqualTo(int      ax);
 std::function<bool(Integer &)> UnequalTo(Integer &ax);
 std::function<bool(Integer &)> UnequalTo(int      ax);
 //TODO: 

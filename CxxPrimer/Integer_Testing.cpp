@@ -87,7 +87,7 @@ bool Less(int      ax, Integer &bx) {
 	}
 	return NULL;
 }
-bool Less(Integer &ax,int       bx) {
+bool Less(Integer &ax, int       bx) {
 	switch (Integer_compare(ax, bx))
 	{
 	case -1:return true;
@@ -328,8 +328,8 @@ int Integer_compare_abs(Integer &ax, Integer &bx) {
 		else if (ax_bidigits < bx_bidigits)return bxbigger;
 		else {
 			for (int i = (int)ceil((double)ax_bidigits / 8) - 1; i >= 0; i--) {
-				if ((ax.data)[i] != (bx.data)[i]) {
-					if ((ax.data)[i] >(bx.data)[i])return axbigger;
+				if (ax[i] != bx[i]) {
+					if (ax[i] >bx[i])return axbigger;
 					else return bxbigger;
 				}
 			}
@@ -346,8 +346,8 @@ int Integer_compare_abs(Integer &ax, int bx) {
 		for (int i = (int)sizeof(int) - 1; i >= 0; i--) {
 			unsigned char tbx = bx >> 8 * i;
 			bx = bx - ((int)tbx << (8 * i));
-			if ((ax.data)[i] != tbx) {
-				if ((ax.data)[i] > tbx)return axbigger;
+			if (ax[i] != tbx) {
+				if (ax[i] > tbx)return axbigger;
 				else return bxbigger;
 			}
 		}
