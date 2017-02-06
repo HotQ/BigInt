@@ -9,6 +9,7 @@ Integer &Integer_add(Integer &ax, int bx, Integer &lhs);
 Integer &Integer_sub(Integer &ax, Integer &bx, Integer &lhs);
 Integer &Integer_sub(Integer &ax, int bx, Integer &lhs);
 Integer &Integer_sub(int ax, Integer &bx, Integer &lhs);
+static void AddToResult(Integer &result, unsigned int sum, int index);
 
 Integer& Integer::reset() {
 	if (this->data) {
@@ -179,7 +180,6 @@ Integer operator+(int ax, Integer &bx) {
 	return Plus(ax, bx);
 }
 
-///a bad lazy implement
 Integer Subtract(Integer &ax, Integer &bx) {
 	bx.sign = 1 - bx.sign;
 	Integer result;
@@ -265,6 +265,52 @@ Integer operator-(int ax, Integer &bx) {
 	return Subtract(ax, bx);
 }
 
+Integer Times(Integer &ax, Integer &bx) {
+	//TODO: this is the sickest implement of Times()
+	//TODO: should we test an Integer equal to zero before Times() run?
+
+	int ax_real_byte = (int)ceil((double)(ax.bidigits()) / 8),
+		bx_real_byte = (int)ceil((double)(bx.bidigits()) / 8),
+		a, b, b2;
+
+	Integer result;
+	result.expand(ax_real_byte + bx_real_byte);
+	if (result.zero)
+		result.zero = 0;
+
+	for (a = 0; a < ax_real_byte - 1; a += 2) {
+		for (b = 0; b < bx_real_byte - 1; b += 2) {
+			unsigned int sum = ((ax.data)[a + 1] * 256 + (ax.data)[a])*((bx.data)[b + 1] * 256 + (bx.data)[b]),
+				CF = 0;
+			AddToResult(result, sum, a + b);
+		}
+	}
+	if (a == ax_real_byte - 1) {
+		for (b2 = 0; b2 < bx_real_byte - 2; b2 += 3) {
+			unsigned int sum = (ax.data)[a] * ((bx.data)[b2 + 2] * 65536 + (bx.data)[b2 + 1] * 256 + (bx.data)[b2]);
+			AddToResult(result, sum, a + b2);
+		}
+		if (bx_real_byte - b2 != 0) {
+			unsigned int sum;
+			switch (bx_real_byte - b2) {
+			case 1:
+				sum = (bx.data)[b2] * (ax.data)[a];
+				break;
+			case 2:
+				sum = ((bx.data)[b2] + (bx.data)[b2 + 1] * 256) * (ax.data)[a];
+				break;
+			}
+			AddToResult(result, sum, a + b2);
+		}
+	}
+	if (b == bx_real_byte - 1) {
+		for (int i = 0; i < ax_real_byte - 1; i += 2) {
+			unsigned int sum = ((ax.data)[i + 1] * 256 + (ax.data)[i])*  (bx.data)[b];
+			AddToResult(result, sum, b + i);
+		}
+	}
+	return result;
+}
 
 Integer &Integer_add(Integer &ax, Integer &bx, Integer &lhs) {
 	Integer *max, *min;
@@ -306,7 +352,6 @@ Integer &Integer_add(Integer &ax, Integer &bx, Integer &lhs) {
 	unsigned char CF = 0;
 	for (unsigned int i = 0; i < min_byte; i++) {
 		int temp = (int)((max->data)[i] + (min->data)[i] + CF);
-
 		(lhs.data)[i] = temp % 256;
 		CF = temp / 256;
 	}
@@ -430,4 +475,21 @@ Integer &Integer_sub(int ax, Integer &bx, Integer &lhs) {
 		lhs.zero = 0;
 
 	return lhs;
+}
+static void AddToResult(Integer &result, unsigned int sum, int index) {
+	int i = index;
+	unsigned CF = 0;
+	while (sum) {
+		unsigned int temp = (result.data)[i] + sum % 256 + CF;
+		(result.data)[i] = temp % 256;
+		CF = temp / 256;
+		sum = sum / 256;
+		i++;
+	}
+	while (CF) {
+		unsigned int temp = (result.data)[i] + CF;
+		(result.data)[i] = temp % 256;
+		CF = temp / 256;
+		i++;
+	}
 }

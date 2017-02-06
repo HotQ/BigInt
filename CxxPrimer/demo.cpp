@@ -11,12 +11,8 @@ using std::endl;
 int main()
 {
 
-
-	Integer z("0x7fffff03"), l("0x7fffff02");
-	cout << endl;
-
-	cout << (z > l) << "\t" << GreaterThan(l)(z) << endl;
-	cout << (z <= 1) << "\t" << (0x7fffffff > z) << endl;
+	Integer z("0x707fffff03"), l("0xff70207fffff02");
+	cout << "34740628695596179551592446726\n" << Times(z, l) << endl;
 
 	return 0;
 }

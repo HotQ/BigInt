@@ -59,6 +59,9 @@ public:
 	friend Integer &Integer_sub(Integer &ax, int bx, Integer &lhs);
 	friend Integer &Integer_sub(int ax, Integer &bx, Integer &lhs);
 
+	friend Integer Times(Integer &ax, Integer &bx);
+	friend static void AddToResult(Integer &result, unsigned int sum, int index);
+
 	/*Integer_Testing */
 	friend bool operator==(Integer &ax, Integer &bx);
 	friend bool operator!=(Integer &ax, Integer &bx);
@@ -80,6 +83,8 @@ Integer Subtract(Integer &ax, Integer &bx);
 Integer Subtract(Integer &ax, int bx);
 Integer Subtract(int ax, Integer &bx);
 Integer Subtract(int ax, int bx);
+
+Integer Times(Integer &ax, Integer &bx);
 
 Integer operator+(Integer &ax, Integer &bx);
 Integer operator+(Integer &ax, int bx);
