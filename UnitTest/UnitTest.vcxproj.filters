@@ -15,25 +15,22 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Integer.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Integer_Testing.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Integer_IO.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="Integer_Arithmetic.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Integer.h">
+    <ClInclude Include="stdafx.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\CxxPrimer\Integer.h">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram.cd" />
+    <ClCompile Include="stdafx.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="unittest_Arithmetic.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
