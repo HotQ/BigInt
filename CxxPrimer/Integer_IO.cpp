@@ -55,6 +55,39 @@ void Integer::print() {
 		}
 	}
 }
+std::string Integer::string() {
+	int digits = 0;
+	intString *temp_intString;
+	std::string result;
+	if (this->zero)
+		//std::cout << '0';
+		result = '0';
+	else {
+		if (this->sign)	result = '-';
+		int digits = this->bidigits();
+		if (digits <= 8)
+		{
+			char *temp=NULL;
+			//std::cout << (unsigned)(this->data)[0];
+			sprintf(temp, "%d", (unsigned)(this->data)[0]);
+			//result.insert(result.end(),TEMP )
+			result += temp;
+		}
+		else {
+			temp_intString = intString_init((int)ceil(Log_10_2*(double)digits), (this->data)[this->byte - 1]);
+			for (int i = this->byte - 2; i >= 0; i--) {
+				intString_add(intString_mul256(&temp_intString), (this->data)[i]);
+			}
+			int i = (temp_intString->digits) - 1;
+			while ((temp_intString->string)[i] == 0)i--;
+			for (; i >= 0; i--) {
+				result+=(char)((temp_intString->string)[i] + '0');
+			}
+			intString_destroy(temp_intString);
+		}
+	}
+	return result;
+}
 int Integer::bidigits() {
 	int digits = 0;
 	for (int i = this->byte - 1; i >= 0; i--) {

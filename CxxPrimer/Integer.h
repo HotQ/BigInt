@@ -6,6 +6,11 @@
 #include <functional>
 #endif // !FUNCTIONAL_INCLUDED
 
+#ifndef STRING_INCLUDED
+#define STRING_INCLUDED
+#include <string>
+#endif // STRING_INCLUDED
+
 
 //#define SHOWLOG
 
@@ -39,6 +44,7 @@ public:
 
 	/* Integer_IO */
 	void print();
+	std::string Integer::string();
 	int bidigits();
 
 	friend std::ostream& operator<<(std::ostream &os, Integer &c);
