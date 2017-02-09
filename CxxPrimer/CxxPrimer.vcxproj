@@ -144,6 +144,7 @@
   <ItemGroup>
     <ClCompile Include="Integer.cpp" />
     <ClCompile Include="Integer_Arithmetic.cpp" />
+    <ClCompile Include="Integer_Bitwise.cpp" />
     <ClCompile Include="Integer_IO.cpp" />
     <ClCompile Include="Integer_Testing.cpp" />
   </ItemGroup>

@@ -45,7 +45,6 @@ public:
 	/* Integer_IO */
 	void print();
 	std::string Integer::string();
-	int bidigits();
 
 	friend std::ostream& operator<<(std::ostream &os, Integer &c);
 	friend std::istream& operator>>(std::istream &is, Integer &c);
@@ -69,6 +68,13 @@ public:
 	friend Integer &Integer_sub(int ax, Integer &bx, Integer &lhs);
 
 	friend Integer Times(Integer &ax, Integer &bx);
+	friend Integer Quotient(Integer &ax, Integer &bx);
+
+	/* Integer_Bitwise */
+	unsigned char getbit(unsigned int indexE, unsigned int indexI);
+	unsigned char getbit(unsigned int index);
+	void putbit(unsigned int index, unsigned char bit);
+	int bidigits();
 
 	/*Integer_Testing */
 	friend bool operator==(Integer &ax, Integer &bx);

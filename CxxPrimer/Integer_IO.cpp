@@ -10,7 +10,6 @@ struct intString {
 	int   digits;
 	unsigned char *string;
 };
-static unsigned char maskH2L[8] = { 0x80,0x40,0x20,0x10,0x08,0x04,0x02,0x01 };
 static unsigned char product_256_nooffset[10][4] = {
 	{ 0,0,0,0 },
 	{ 0,2,5,6 },
@@ -55,12 +54,13 @@ void Integer::print() {
 		}
 	}
 }
+
+
 std::string Integer::string() {
 	int digits = 0;
 	intString *temp_intString;
 	std::string result;
 	if (this->zero)
-		//std::cout << '0';
 		result = '0';
 	else {
 		if (this->sign)	result = '-';
@@ -68,9 +68,7 @@ std::string Integer::string() {
 		if (digits <= 8)
 		{
 			char *temp=NULL;
-			//std::cout << (unsigned)(this->data)[0];
 			sprintf(temp, "%d", (unsigned)(this->data)[0]);
-			//result.insert(result.end(),TEMP )
 			result += temp;
 		}
 		else {
@@ -87,20 +85,6 @@ std::string Integer::string() {
 		}
 	}
 	return result;
-}
-int Integer::bidigits() {
-	int digits = 0;
-	for (int i = this->byte - 1; i >= 0; i--) {
-		for (int j = 0; j < 8; j++) {
-			if ((this->data[i]) & maskH2L[j]) {
-				digits = 8 * i + 8 - j;
-				break;
-			}
-		}
-		if (digits)
-			break;
-	}
-	return digits;
 }
 std::ostream& operator<<(std::ostream &os, Integer &c) {
 	c.print();

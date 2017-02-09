@@ -27,6 +27,9 @@
     <ClCompile Include="Integer_Arithmetic.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="Integer_Bitwise.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Integer.h">
