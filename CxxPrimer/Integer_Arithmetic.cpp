@@ -3,6 +3,9 @@
 #include <cmath>
 #include "Integer.h"
 
+#define maybe 0
+#define AxGreater 1
+#define BxGreater -1
 
 Integer &Integer_add(Integer &ax, Integer &bx, Integer &lhs);
 Integer &Integer_add(Integer &ax, int bx, Integer &lhs);
@@ -309,6 +312,89 @@ Integer Times(Integer &ax, Integer &bx) {
 			AddToResult(result, sum, b + i);
 		}
 	}
+	return result;
+}
+Integer Quotient(Integer &ax, Integer &bx) {
+	int ax_bit = ax.bidigits(),
+		bx_bit = bx.bidigits();
+
+	switch (Integer_compare_abs(ax, bx)) {
+	case -1:
+		return 0;
+	case 0:
+		return ((ax.sign^bx.sign) == 1 ? -1 : 1);
+	}
+
+	Integer ax_1 = ax, result;
+	int temp = (int)ceil((double)(ax_bit) / 8) - (int)ceil((double)(bx_bit) / 8) + 1;
+	result.expand(temp > 4 ? temp : 4);
+	for (int bx_tail = ax_bit - bx_bit; bx_tail >= 0; bx_tail--) {
+		int isAxGreater = maybe,
+			copmare_pointer = bx_tail + bx_bit;
+		unsigned char CF = 0;
+
+		if (copmare_pointer + 1 <= ax_bit && ax_1.getbit(copmare_pointer) == 1) {
+			isAxGreater = AxGreater;
+			result.setbit(bx_tail, 1);
+
+			for (int i = 0; i<bx_bit; i++) {
+				char temp = ax_1.getbit(i + bx_tail) - bx.getbit(i) - CF;
+				switch (temp) {
+				case 1:
+				case 0:
+					ax_1.setbit(i + bx_tail, temp);
+					CF = 0; break;
+				case -1:
+				case -2:
+					ax_1.setbit(i + bx_tail, (-temp) % 2);
+					CF = 1; break;
+				}
+			}
+			char temp = ax_1.getbit(bx_bit + bx_tail) - CF;
+			switch (temp) {
+			case 1:
+			case 0:
+				ax_1.setbit(bx_bit + bx_tail, temp);
+				CF = 0; break;
+			case -1:
+			case -2:
+				ax_1.setbit(bx_bit + bx_tail, (-temp) % 2);
+				CF = 1; break;
+			}
+			continue;
+		}
+		while ((isAxGreater == maybe) && (copmare_pointer != bx_tail)) {
+			copmare_pointer--;
+			if (ax_1.getbit(copmare_pointer) > bx.getbit(copmare_pointer - bx_tail)) {
+				isAxGreater = AxGreater;
+				break;
+			}
+			else if (ax_1.getbit(copmare_pointer) < bx.getbit(copmare_pointer - bx_tail)) {
+				isAxGreater = BxGreater;
+				break;
+			}
+		}
+		if (isAxGreater == maybe)
+			isAxGreater = AxGreater;
+		if (isAxGreater == AxGreater) {
+			result.setbit(bx_tail, 1);
+			for (int i = 0; i<bx_bit; i++) {
+				char temp = ax_1.getbit(i + bx_tail) - bx.getbit(i) - CF;
+				switch (temp) {
+				case 1:
+				case 0:
+					ax_1.setbit(i + bx_tail, temp);
+					CF = 0; break;
+				case -1:
+				case -2:
+					ax_1.setbit(i + bx_tail, (-temp) % 2);
+					CF = 1; break;
+				}
+			}
+		}
+	}
+	result.zero = 0;
+	result.sign = ax.sign^bx.sign;
 	return result;
 }
 

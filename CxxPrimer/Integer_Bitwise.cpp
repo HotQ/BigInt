@@ -10,7 +10,7 @@ unsigned char Integer::getbit(unsigned int indexE, unsigned int indexI) {
 unsigned char Integer::getbit(unsigned int index) {
 	return getbit(index / 8, index % 8);
 }
-void Integer::putbit(unsigned int index, unsigned char bit) {
+void Integer::setbit(unsigned int index, unsigned char bit) {
 	if (bit)
 		this->data[index / 8] |= maskL2H[index % 8];
 	else

@@ -73,7 +73,7 @@ public:
 	/* Integer_Bitwise */
 	unsigned char getbit(unsigned int indexE, unsigned int indexI);
 	unsigned char getbit(unsigned int index);
-	void putbit(unsigned int index, unsigned char bit);
+	void setbit(unsigned int index, unsigned char bit);
 	int bidigits();
 
 	/*Integer_Testing */
@@ -99,6 +99,7 @@ Integer Subtract(int ax, Integer &bx);
 Integer Subtract(int ax, int bx);
 
 Integer Times(Integer &ax, Integer &bx);
+Integer Quotient(Integer &ax, Integer &bx);
 
 Integer operator+(Integer &ax, Integer &bx);
 Integer operator+(Integer &ax, int bx);
