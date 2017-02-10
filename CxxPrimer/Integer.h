@@ -69,6 +69,8 @@ public:
 
 	friend Integer Times(Integer &ax, Integer &bx);
 	friend Integer Quotient(Integer &ax, Integer &bx);
+	friend Integer Power(Integer &ax, int bx);
+
 
 	/* Integer_Bitwise */
 	unsigned char getbit(unsigned int indexE, unsigned int indexI);

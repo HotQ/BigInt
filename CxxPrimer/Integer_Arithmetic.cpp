@@ -74,6 +74,7 @@ Integer& Integer::expand(int d) {
 	}
 	return *this;
 }
+
 Integer Plus(Integer &ax, Integer &bx) {
 	if (ax.zero == 1 || bx.zero == 1) {
 		if (ax.zero == 1)
@@ -274,7 +275,7 @@ Integer Times(Integer &ax, Integer &bx) {
 
 	int ax_real_byte = (int)ceil((double)(ax.bidigits()) / 8),
 		bx_real_byte = (int)ceil((double)(bx.bidigits()) / 8),
-		a, b, b2;
+		a = 0, b = 0, b2 = 0;
 
 	Integer result;
 	result.expand(ax_real_byte + bx_real_byte);
@@ -395,6 +396,25 @@ Integer Quotient(Integer &ax, Integer &bx) {
 	}
 	result.zero = 0;
 	result.sign = ax.sign^bx.sign;
+	return result;
+}
+Integer Power(Integer &ax, int b) {
+	Integer result = ax;
+
+	unsigned int mask = (1 << (sizeof(int) * 8 - 1));
+	bool isBegin = false;
+	while (!isBegin) {
+		if ((mask&b) == mask)
+			isBegin = true;
+		mask >>= 1;
+	}
+	while (mask) {
+		if ((mask&b) == mask)
+			result = Times(Times(result, result), ax);
+		else
+			result = Times(result, result);
+		mask >>= 1;
+	}
 	return result;
 }
 
