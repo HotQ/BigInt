@@ -147,7 +147,6 @@
     <ClCompile Include="Integer_Bitwise.cpp" />
     <ClCompile Include="Integer_IO.cpp" />
     <ClCompile Include="Integer_Testing.cpp" />
-    <ClCompile Include="源.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Integer.h" />

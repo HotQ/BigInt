@@ -482,28 +482,28 @@ Integer operator^(Integer &ax, Integer &bx) {
 	return Power(ax, bx);
 }
 
-//Integer Surd(Integer &ax, int b) {
-//	Integer Divide_a_b = Quotient(ax, b),
-//		x0 = ax >> (ax.bidigits() * (b - 1) / b),
-//		x1 = Quotient((b - 1)*x0, b) + Quotient(Divide_a_b, Power(x0, b - 1));
-//
-//	while (Integer_compare_abs(x1 - x0, 1) != 0 && Integer_compare_abs(x1 - x0, 0) != 0) {
-//		x0 = x1;
-//		x1 = Quotient((b - 1)*x0, b) + Quotient(Divide_a_b, Power(x0, b - 1));
-//#ifdef SHOWLOG
-//		std::cout << x0 << "\t" << x1 << std::endl;
-//#endif
-//	}
-//	if (Integer_compare_abs(x1 - x0, 1) == 0) {
-//		switch (Integer_compare_abs(ax - x1^b, ax - x0^b))
-//		{
-//		case -1:return x1;
-//		case  1:return x0;
-//		case  0:return x0;
-//		}
-//	}
-//	return x0;
-//}
+Integer Surd(Integer &ax, int b) {
+	Integer Divide_a_b = Quotient(ax, b),
+		x0 = ax >> (ax.bidigits() * (b - 1) / b),
+		x1 = Quotient((b - 1)*x0, b) + Quotient(Divide_a_b, Power(x0, b - 1));
+
+	while (Integer_compare_abs(x1 - x0, 1) != 0 && Integer_compare_abs(x1 - x0, 0) != 0) {
+		x0 = x1;
+		x1 = Quotient((b - 1)*x0, b) + Quotient(Divide_a_b, Power(x0, b - 1));
+#ifdef SHOWLOG
+		std::cout << x0 << "\t" << x1 << std::endl;
+#endif
+	}
+	if (Integer_compare_abs(x1 - x0, 1) == 0) {
+		switch (Integer_compare_abs(ax - x1^b, ax - x0^b))
+		{
+		case -1:return x1;
+		case  1:return x0;
+		case  0:return x0;
+		}
+	}
+	return x0;
+}
 
 Integer &Integer_add(Integer &ax, Integer &bx, Integer &lhs) {
 	Integer *max, *min;
