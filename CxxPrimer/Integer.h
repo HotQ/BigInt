@@ -70,7 +70,8 @@ public:
 	friend Integer Times(Integer &ax, Integer &bx);
 	friend Integer Quotient(Integer &ax, Integer &bx);
 	friend Integer Power(Integer &ax, int bx);
-
+	
+	friend Integer operator>>(Integer &ax, int b);
 
 	/* Integer_Bitwise */
 	unsigned char getbit(unsigned int indexE, unsigned int indexI);
@@ -100,8 +101,23 @@ Integer Subtract(Integer &ax, int bx);
 Integer Subtract(int ax, Integer &bx);
 Integer Subtract(int ax, int bx);
 
+Integer Times(int      a, int b);
+Integer Times(Integer &ax, int b);
 Integer Times(Integer &ax, Integer &bx);
+Integer operator*(Integer &ax, int b);
+Integer operator*(int a, Integer &bx);
+Integer operator*(Integer &ax, Integer &bx);
+
 Integer Quotient(Integer &ax, Integer &bx);
+Integer Quotient(Integer &ax, int b);
+
+Integer Power(int      a, int b);
+Integer Power(Integer &ax, int b);
+Integer Power(Integer &ax, Integer &bx);
+Integer operator^(Integer &ax, int b);
+Integer operator^(Integer &ax, Integer &bx);
+
+Integer Surd(Integer &ax, int b);
 
 Integer operator+(Integer &ax, Integer &bx);
 Integer operator+(Integer &ax, int bx);

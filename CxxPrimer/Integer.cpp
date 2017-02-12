@@ -206,7 +206,8 @@ Integer::Integer(const char *cchr_src)
 				quotient[length - 2] = 0;
 
 			}
-			(this->data)[j++] = (unsigned char)(100 * dividend[length - 2] + 10 * dividend[length - 1] + dividend[length]);
+			if(j!=digits)
+				(this->data)[j++] = (unsigned char)(100 * dividend[length - 2] + 10 * dividend[length - 1] + dividend[length]);
 			if (dividend)
 				free(dividend);
 			if (quotient)

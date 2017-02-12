@@ -269,6 +269,14 @@ Integer operator-(int ax, Integer &bx) {
 	return Subtract(ax, bx);
 }
 
+Integer Times(int      a, int b) {
+	Integer temp1(a), temp2(b);
+	return Times(temp1, temp2);
+}
+Integer Times(Integer &ax, int b) {
+	Integer bx(b);
+	return Times(ax, bx);
+}
 Integer Times(Integer &ax, Integer &bx) {
 	//TODO: this is the sickest implement of Times()
 	//TODO: should we test an Integer equal to zero before Times() run?
@@ -276,6 +284,9 @@ Integer Times(Integer &ax, Integer &bx) {
 	int ax_real_byte = (int)ceil((double)(ax.bidigits()) / 8),
 		bx_real_byte = (int)ceil((double)(bx.bidigits()) / 8),
 		a = 0, b = 0, b2 = 0;
+
+	if (ax_real_byte == 0 || bx_real_byte == 0)
+		return 0;
 
 	Integer result;
 	result.expand(ax_real_byte + bx_real_byte);
@@ -295,7 +306,7 @@ Integer Times(Integer &ax, Integer &bx) {
 			AddToResult(result, sum, a + b2);
 		}
 		if (bx_real_byte - b2 != 0) {
-			unsigned int sum;
+			unsigned int sum = 0;
 			switch (bx_real_byte - b2) {
 			case 1:
 				sum = bx[b2] * ax[a];
@@ -313,8 +324,19 @@ Integer Times(Integer &ax, Integer &bx) {
 			AddToResult(result, sum, b + i);
 		}
 	}
+	result.sign = ax.sign^bx.sign;
 	return result;
 }
+Integer operator*(Integer &ax, int b) {
+	return Times(ax, b);
+}
+Integer operator*(int a, Integer &bx) {
+	return Times(bx, a);
+}
+Integer operator*(Integer &ax, Integer &bx) {
+	return Times(ax, bx);
+}
+
 Integer Quotient(Integer &ax, Integer &bx) {
 	int ax_bit = ax.bidigits(),
 		bx_bit = bx.bidigits();
@@ -398,9 +420,28 @@ Integer Quotient(Integer &ax, Integer &bx) {
 	result.sign = ax.sign^bx.sign;
 	return result;
 }
+Integer Quotient(Integer &ax, int b) {
+	Integer bx(b);
+	return Quotient(ax, bx);
+}
+
+Integer operator>>(Integer &ax, int b) {
+	int bits = ax.bidigits();
+	Integer result;
+	int temp = (int)ceil((double)(bits - b) / 8);
+	result.expand(temp > sizeof(int) ? temp : sizeof(int));
+	for (int i = 0; i < bits - b; i++)
+		result.setbit(i, ax.getbit(i + b));
+	result.zero = 0;
+	return result;
+}
+
+Integer Power(int      a, int b) {
+	Integer temp(a);
+	return Power(temp, b);
+}
 Integer Power(Integer &ax, int b) {
 	Integer result = ax;
-
 	unsigned int mask = (1 << (sizeof(int) * 8 - 1));
 	bool isBegin = false;
 	while (!isBegin) {
@@ -410,13 +451,59 @@ Integer Power(Integer &ax, int b) {
 	}
 	while (mask) {
 		if ((mask&b) == mask)
-			result = Times(Times(result, result), ax);
+			result = result * result * ax;
 		else
-			result = Times(result, result);
+			result = result * result;
 		mask >>= 1;
 	}
+	if (ax.sign == 1)
+		result.sign = b % 2;
 	return result;
 }
+Integer Power(Integer &ax, Integer &bx) {
+	Integer result = ax;
+	unsigned int mask = (1 << (sizeof(int) * 8 - 1));
+	bool isBegin = false;
+	for (int i = bx.bidigits() - 2; i >= 0; i--) {
+		if (bx.getbit(i))
+			result = result * result * ax;
+		else
+			result = result * result;
+	}
+
+	if (ax.sign == 1)
+		result.sign = bx.getbit(0) % 2;
+	return result;
+}
+Integer operator^(Integer &ax, int b) {
+	return Power(ax, b);
+}
+Integer operator^(Integer &ax, Integer &bx) {
+	return Power(ax, bx);
+}
+
+//Integer Surd(Integer &ax, int b) {
+//	Integer Divide_a_b = Quotient(ax, b),
+//		x0 = ax >> (ax.bidigits() * (b - 1) / b),
+//		x1 = Quotient((b - 1)*x0, b) + Quotient(Divide_a_b, Power(x0, b - 1));
+//
+//	while (Integer_compare_abs(x1 - x0, 1) != 0 && Integer_compare_abs(x1 - x0, 0) != 0) {
+//		x0 = x1;
+//		x1 = Quotient((b - 1)*x0, b) + Quotient(Divide_a_b, Power(x0, b - 1));
+//#ifdef SHOWLOG
+//		std::cout << x0 << "\t" << x1 << std::endl;
+//#endif
+//	}
+//	if (Integer_compare_abs(x1 - x0, 1) == 0) {
+//		switch (Integer_compare_abs(ax - x1^b, ax - x0^b))
+//		{
+//		case -1:return x1;
+//		case  1:return x0;
+//		case  0:return x0;
+//		}
+//	}
+//	return x0;
+//}
 
 Integer &Integer_add(Integer &ax, Integer &bx, Integer &lhs) {
 	Integer *max, *min;
