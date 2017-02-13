@@ -172,22 +172,13 @@ Integer::Integer(const char *cchr_src)
 		}
 		else if (length>1) {
 
-			char *dividend = nullptr,
-				*quotient = nullptr,
+			char *dividend = new char[length + 1],
+				*quotient = new char[length + 1](),
 				*swap;
-			auto temp = (char *)malloc(length + 1);
-			if (temp)
-				dividend = temp;
-			temp = (char *)calloc(length + 1, sizeof(char));
-			if (temp)
-				quotient = temp;
 
 			dividend[0] = 0;
 			for (i = 1; i < length + 1; i++)
 				dividend[i] = cchr_src[i - 1 + lengthOffset] - '0';
-
-
-
 
 			j = 0;
 			while (length + 1 - zero_number(dividend) >= 3) {
@@ -204,14 +195,11 @@ Integer::Integer(const char *cchr_src)
 				quotient[length] = 0;
 				quotient[length - 1] = 0;
 				quotient[length - 2] = 0;
-
 			}
-			if(j!=digits)
+			if (j != digits)
 				(this->data)[j++] = (unsigned char)(100 * dividend[length - 2] + 10 * dividend[length - 1] + dividend[length]);
-			if (dividend)
-				free(dividend);
-			if (quotient)
-				free(quotient);
+			delete[] dividend;
+			delete[] quotient;
 		}
 	}
 }

@@ -70,7 +70,7 @@ std::string Integer::string() {
 			char *temp = new char[3];
 			sprintf_s(temp, 3, "%d", (unsigned)(this->data)[0]);
 			result += temp;
-			delete temp;
+			delete[] temp;
 		}
 		else {
 			temp_intString = intString_init((int)ceil(Log_10_2*(double)digits), (this->data)[this->byte - 1]);
