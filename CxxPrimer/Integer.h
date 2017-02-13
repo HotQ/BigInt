@@ -69,9 +69,9 @@ public:
 
 	friend Integer Times(Integer &ax, Integer &bx);
 	friend Integer Quotient(Integer &ax, Integer &bx);
-	friend Integer Power(Integer &ax, int bx);
-	
 	friend Integer operator>>(Integer &ax, int b);
+	friend Integer Power(Integer &ax, int bx);
+	friend Integer Mod(Integer &ax, Integer &bx);
 
 	/* Integer_Bitwise */
 	unsigned char getbit(unsigned int indexE, unsigned int indexI);
@@ -96,10 +96,17 @@ Integer Plus(Integer &ax, Integer &bx);
 Integer Plus(Integer &ax, int bx);
 Integer Plus(int ax, Integer &bx);
 Integer Plus(int ax, int bx);
+Integer operator+(Integer &ax, Integer &bx);
+Integer operator+(Integer &ax, int bx);
+Integer operator+(int ax, Integer &bx);
+
 Integer Subtract(Integer &ax, Integer &bx);
 Integer Subtract(Integer &ax, int bx);
 Integer Subtract(int ax, Integer &bx);
 Integer Subtract(int ax, int bx);
+Integer operator-(Integer &ax, Integer &bx);
+Integer operator-(Integer &ax, int bx);
+Integer operator-(int ax, Integer &bx);
 
 Integer Times(int      a, int b);
 Integer Times(Integer &ax, int b);
@@ -110,6 +117,11 @@ Integer operator*(Integer &ax, Integer &bx);
 
 Integer Quotient(Integer &ax, Integer &bx);
 Integer Quotient(Integer &ax, int b);
+Integer Quotient(int a, int b);
+Integer operator/(Integer &ax, Integer &bx);
+Integer operator/(Integer &ax, int b);
+
+Integer operator>>(Integer &ax, int b);
 
 Integer Power(int      a, int b);
 Integer Power(Integer &ax, int b);
@@ -118,13 +130,8 @@ Integer operator^(Integer &ax, int b);
 Integer operator^(Integer &ax, Integer &bx);
 
 Integer Surd(Integer &ax, int b);
-
-Integer operator+(Integer &ax, Integer &bx);
-Integer operator+(Integer &ax, int bx);
-Integer operator+(int ax, Integer &bx);
-Integer operator-(Integer &ax, Integer &bx);
-Integer operator-(Integer &ax, int bx);
-Integer operator-(int ax, Integer &bx);
+Integer Mod(Integer &ax, Integer &bx);
+Integer operator%(Integer &ax, Integer &bx);
 
 /* Integer_Testing */
 bool Equal(Integer &ax, Integer &bx);

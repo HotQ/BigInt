@@ -424,6 +424,15 @@ Integer Quotient(Integer &ax, int b) {
 	Integer bx(b);
 	return Quotient(ax, bx);
 }
+Integer Quotient(int a, int b) {
+	return a / b; // lmao
+}
+Integer operator/(Integer &ax, Integer &bx) {
+	return Quotient(ax, bx);
+}
+Integer operator/(Integer &ax, int b) {
+	return Quotient(ax, b);
+}
 
 Integer operator>>(Integer &ax, int b) {
 	int bits = ax.bidigits();
@@ -483,13 +492,13 @@ Integer operator^(Integer &ax, Integer &bx) {
 }
 
 Integer Surd(Integer &ax, int b) {
-	Integer Divide_a_b = Quotient(ax, b),
+	Integer Divide_a_b = ax / b,
 		x0 = ax >> (ax.bidigits() * (b - 1) / b),
-		x1 = Quotient((b - 1)*x0, b) + Quotient(Divide_a_b, Power(x0, b - 1));
+		x1 = x0 * (b - 1) / b + Divide_a_b / (x0 ^ (b - 1));
 
 	while (Integer_compare_abs(x1 - x0, 1) != 0 && Integer_compare_abs(x1 - x0, 0) != 0) {
 		x0 = x1;
-		x1 = Quotient((b - 1)*x0, b) + Quotient(Divide_a_b, Power(x0, b - 1));
+		x1 = x0 * (b - 1) / b + Divide_a_b / (x0 ^ (b - 1));
 #ifdef SHOWLOG
 		std::cout << x0 << "\t" << x1 << std::endl;
 #endif
@@ -504,6 +513,90 @@ Integer Surd(Integer &ax, int b) {
 	}
 	return x0;
 }
+Integer Mod(Integer &ax, Integer &bx) {
+	switch (Integer_compare_abs(ax, bx)) {
+	case -1:
+		return ax;
+	case 0:
+		return 0;
+	}
+
+	int ax_bit = ax.bidigits(),
+		bx_bit = bx.bidigits();
+	Integer ax_1 = ax;
+
+	for (int bx_tail = ax_bit - bx_bit; bx_tail >= 0; bx_tail--) {
+		int isAxGreater = maybe,
+			copmare_pointer = bx_tail + bx_bit;
+		unsigned char CF = 0;
+
+		if (copmare_pointer + 1 <= ax_bit && ax_1.getbit(copmare_pointer) == 1) {
+			isAxGreater = AxGreater;
+
+			for (int i = 0; i < bx_bit; i++) {
+				char temp = ax_1.getbit(i + bx_tail) - bx.getbit(i) - CF;
+				switch (temp) {
+				case 1:
+				case 0:
+					ax_1.setbit(i + bx_tail, temp);
+					CF = 0; break;
+				case -1:
+				case -2:
+					ax_1.setbit(i + bx_tail, (-temp) % 2);
+					CF = 1; break;
+				}
+			}
+			char temp = ax_1.getbit(bx_bit + bx_tail) - CF;
+			switch (temp) {
+			case 1:
+			case 0:
+				ax_1.setbit(bx_bit + bx_tail, temp);
+				CF = 0; break;
+			case -1:
+			case -2:
+				ax_1.setbit(bx_bit + bx_tail, (-temp) % 2);
+				CF = 1; break;
+			}
+			continue;
+		}
+		while ((isAxGreater == maybe) && (copmare_pointer != bx_tail)) {
+			copmare_pointer--;
+			if (ax_1.getbit(copmare_pointer) > bx.getbit(copmare_pointer - bx_tail)) {
+				isAxGreater = AxGreater;
+				break;
+			}
+			else if (ax_1.getbit(copmare_pointer) < bx.getbit(copmare_pointer - bx_tail)) {
+				isAxGreater = BxGreater;
+				break;
+			}
+		}
+		if (isAxGreater == maybe)
+			isAxGreater = AxGreater;
+		if (isAxGreater == AxGreater) {
+			for (int i = 0; i < bx_bit; i++) {
+				char temp = ax_1.getbit(i + bx_tail) - bx.getbit(i) - CF;
+				switch (temp) {
+				case 1:
+				case 0:
+					ax_1.setbit(i + bx_tail, temp);
+					CF = 0; break;
+				case -1:
+				case -2:
+					ax_1.setbit(i + bx_tail, (-temp) % 2);
+					CF = 1; break;
+				}
+			}
+		}
+	}
+	if ((ax.sign ^ bx.sign))
+		return ax_1 + bx;
+	else
+		return ax_1;
+}
+Integer operator%(Integer &ax, Integer &bx) {
+	return Mod(ax, bx);
+}
+
 
 Integer &Integer_add(Integer &ax, Integer &bx, Integer &lhs) {
 	Integer *max, *min;

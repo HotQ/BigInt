@@ -67,9 +67,10 @@ std::string Integer::string() {
 		int digits = this->bidigits();
 		if (digits <= 8)
 		{
-			char *temp=NULL;
-			sprintf(temp, "%d", (unsigned)(this->data)[0]);
+			char *temp = new char[3];
+			sprintf_s(temp, 3, "%d", (unsigned)(this->data)[0]);
 			result += temp;
+			delete temp;
 		}
 		else {
 			temp_intString = intString_init((int)ceil(Log_10_2*(double)digits), (this->data)[this->byte - 1]);
@@ -79,7 +80,7 @@ std::string Integer::string() {
 			int i = (temp_intString->digits) - 1;
 			while ((temp_intString->string)[i] == 0)i--;
 			for (; i >= 0; i--) {
-				result+=(char)((temp_intString->string)[i] + '0');
+				result += (char)((temp_intString->string)[i] + '0');
 			}
 			intString_destroy(temp_intString);
 		}
