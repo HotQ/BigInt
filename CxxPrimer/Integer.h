@@ -44,7 +44,8 @@ public:
 
 	/* Integer_IO */
 	void print();
-	std::string Integer::string();
+	std::string toString();
+	int toInt();
 
 	friend std::ostream& operator<<(std::ostream &os, Integer &c);
 	friend std::istream& operator>>(std::istream &is, Integer &c);
@@ -131,7 +132,14 @@ Integer operator^(Integer &ax, Integer &bx);
 
 Integer Surd(Integer &ax, int b);
 Integer Mod(Integer &ax, Integer &bx);
+Integer Mod(Integer &ax, int b);
 Integer operator%(Integer &ax, Integer &bx);
+Integer operator%(Integer &ax, int b);
+
+Integer PowerMod(int a, int b, int c);
+Integer PowerMod(Integer &ax, int b, int c);
+Integer PowerMod(Integer &ax, Integer &bx, int c);
+Integer PowerMod(Integer &ax, Integer &bx, Integer &cx);
 
 /* Integer_Testing */
 bool Equal(Integer &ax, Integer &bx);

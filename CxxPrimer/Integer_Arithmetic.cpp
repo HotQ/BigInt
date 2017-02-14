@@ -593,10 +593,61 @@ Integer Mod(Integer &ax, Integer &bx) {
 	else
 		return ax_1;
 }
+Integer Mod(Integer &ax, int b) {
+	Integer bx(b);
+	return Mod(ax, bx);
+}
 Integer operator%(Integer &ax, Integer &bx) {
 	return Mod(ax, bx);
 }
+Integer operator%(Integer &ax, int b) {
+	return Mod(ax, b);
+}
 
+Integer PowerMod(int a, int b, int c)
+{
+	int result = 1;
+	a = a % c;
+	while (b>0) {
+		if (b % 2 == 1)
+			result = (result * a) % c;
+		b = b / 2;
+		a = (a * a) % c;
+	}
+	return result;
+}
+Integer PowerMod(Integer &ax, int b, int c)
+{
+	int result = 1;
+	int a = (ax % c).toInt();
+	while (b>0) {
+		if (b % 2 == 1)
+			result = (result * a) % c;
+		b = b / 2;
+		a = (a * a) % c;
+	}
+	return result;
+}
+Integer PowerMod(Integer &ax, Integer &bx, int c)
+{
+	int result = 1;
+	int a = (ax % c).toInt();
+	for (int i = 0; bx.bidigits() > i; i++) {
+		if (bx.getbit(i))
+			result = (result * a) % c;
+		a = (a * a) % c;
+	}
+	return result;
+}
+Integer PowerMod(Integer &ax, Integer &bx, Integer &cx) {
+	Integer result = 1, a = ax % cx;
+	for (int i = 0; bx.bidigits() > i; i++) {
+		if (bx.getbit(i))
+			result = (result * a) % cx;
+		a = (a ^ 2) % cx;
+	}
+	return result;
+}
 
 Integer &Integer_add(Integer &ax, Integer &bx, Integer &lhs) {
 	Integer *max, *min;

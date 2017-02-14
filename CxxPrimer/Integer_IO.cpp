@@ -55,8 +55,15 @@ void Integer::print() {
 	}
 }
 
+int Integer::toInt() {
+	int result = (((int)(this->data[3])) << 24) + (((int)(this->data[1])) << 16) + (((int)(this->data[1])) << 8) + (int)(this->data[0]);
+	if (this->sign)
+		return 0 - result;
+	else
+		return  result;
+}
 
-std::string Integer::string() {
+std::string Integer::toString() {
 	int digits = 0;
 	intString *temp_intString;
 	std::string result;

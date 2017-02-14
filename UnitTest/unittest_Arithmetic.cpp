@@ -52,7 +52,15 @@ namespace UnitTest
 			z1 = "-765465435356878785"; z2 = "-90000";
 			testIntS(Mod(z1, z2), "-28785");
 		}
+		TEST_METHOD(Arithmetic_PowerMod_Integer) {
+			Integer z1(98776546), z2(1482850959), z3(368);
 
+			testIntS(PowerMod(98776546, 1482850959, 368), "336");
+			testIntS(PowerMod(z1, 1482850959, 368), "336");
+			testIntS(PowerMod(z1, z2, 368), "336");
+			testIntS(PowerMod(z1, z2, z3), "336");
+
+		}
 
 	};
 }
