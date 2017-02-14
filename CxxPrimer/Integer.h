@@ -123,6 +123,7 @@ Integer operator/(Integer &ax, Integer &bx);
 Integer operator/(Integer &ax, int b);
 
 Integer operator>>(Integer &ax, int b);
+Integer operator<<(Integer &ax, int b);
 
 Integer Power(int      a, int b);
 Integer Power(Integer &ax, int b);
@@ -131,6 +132,7 @@ Integer operator^(Integer &ax, int b);
 Integer operator^(Integer &ax, Integer &bx);
 
 Integer Surd(Integer &ax, int b);
+Integer Sqrt(Integer &ax);
 Integer Mod(Integer &ax, Integer &bx);
 Integer Mod(Integer &ax, int b);
 Integer operator%(Integer &ax, Integer &bx);

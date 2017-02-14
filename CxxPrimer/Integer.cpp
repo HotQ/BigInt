@@ -44,8 +44,10 @@ Integer::Integer(int int_src)
 	if (temp)
 		this->data = temp;
 
-	if (int_src == 0)
+	if (int_src == 0) {
+		this->sign = 0;
 		this->zero = 1;
+	}
 	else
 		this->zero = 0;
 
@@ -53,7 +55,7 @@ Integer::Integer(int int_src)
 
 	if (int_src > 0)
 		this->sign = 0;
-	else {
+	else if (int_src < 0) {
 		this->sign = 1;
 		int_src = -int_src;
 	}

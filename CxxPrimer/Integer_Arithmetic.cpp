@@ -444,6 +444,16 @@ Integer operator>>(Integer &ax, int b) {
 	result.zero = 0;
 	return result;
 }
+Integer operator<<(Integer &ax, int b) {
+	int bits = ax.bidigits();
+	Integer result;
+	int temp = (int)ceil((double)(bits + b) / 8);
+	result.expand(temp > sizeof(int) ? temp : sizeof(int));
+	for (int i = 0; i < bits; i++)
+		result.setbit(i + b, ax.getbit(i));
+	result.zero = 0;
+	return result;
+}
 
 Integer Power(int      a, int b) {
 	Integer temp(a);
@@ -513,6 +523,73 @@ Integer Surd(Integer &ax, int b) {
 	}
 	return x0;
 }
+Integer Sqrt(Integer &ax1) {
+	Integer ax = (ax1 << 8);
+
+	if (Sign(ax) == 0)return 0;
+	else if (Sign(ax) == 1) {
+		Integer Divide_a_2 = ax / 2,
+			x0 = ax >> (ax.bidigits() / 2),
+			x1 = x0 / 2 + Divide_a_2 / x0;
+
+		while ((Integer_compare_abs(x1 - x0, 1) != 0) && (Integer_compare_abs(x1 - x0, 0) != 0)) {
+			x0 = x1;
+			x1 = x0 / 2 + Divide_a_2 / x0;
+		}
+
+		if (Integer_compare_abs(x1 - x0, 1) == 0) {
+			Integer t0 = ax - x0*x0, t1 = ax - x1*x1;
+			int s0 = Sign(t0), s1 = Sign(t1);
+
+			if (s0 == 0)
+				return x0 >> 4;
+			else if (s1 == 0)
+				return x1 >> 4;
+
+			if (s0 == 1 && s1 == 1) {
+				switch (Integer_compare_abs(t0, t1))
+				{
+				case -1:return x0 >> 4;
+				case  1:return x1 >> 4;
+				case  0:return x0 >> 4;
+				}
+			}
+			else if (s0 == 1 && s1 == -1) {
+				return x0 >> 4;
+			}
+			else if (s1 == 1 && s0 == -1) {
+
+				return x1 >> 4;
+			}
+			else if (s0 == -1 && s1 == -1) {
+				switch (Integer_compare_abs(t0, t1))
+				{
+				case -1:return x0 >> 4;
+				case  1:return x1 >> 4;
+				case  0:return x1 >> 4;
+				}
+			}
+			return x0 >> 4;
+		}
+		else {
+			Integer t1 = ax - x1*x1;
+			int s1 = Sign(t1);
+
+			if (s1 == 1) {
+				if ((t1 - 1 - (x1 << 1)) >= 0)
+					return (x1 + 1) >> 4;
+				else
+					return x1 >> 4;
+			}
+			else if (s1 == -1) {
+				return (x1 - 1) >> 4;
+			}
+			else
+				return x0 >> 4;
+		}
+	}
+}
+
 Integer Mod(Integer &ax, Integer &bx) {
 	switch (Integer_compare_abs(ax, bx)) {
 	case -1:
