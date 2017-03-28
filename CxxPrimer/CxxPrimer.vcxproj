@@ -150,6 +150,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Integer.h" />
+    <ClInclude Include="List.h" />
+    <ClInclude Include="Rational.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
