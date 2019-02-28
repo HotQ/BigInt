@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include "Integer.h"
+#include "../CxxPrimer/Integer.h"
 #include "test_config.h"
 #include <iostream>
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;

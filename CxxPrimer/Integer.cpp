@@ -241,7 +241,7 @@ Integer::Integer(Integer&& c)
 		c.data = nullptr;
 	}
 }
-Integer& Integer::operator=(Integer& c) {
+Integer& Integer::operator=(const Integer& c) {
 #ifdef SHOWLOG
 	std::clog << this << "\t\t\t copy assignment" << std::endl;
 #endif // SHOWLOG
@@ -326,7 +326,7 @@ static inline int divide256(char *dividend_offset) {
 		case 4:
 			divident_sub_256(dividend_offset, 1);
 			return 1;
-		case 5://
+		case 5:
 			if (dividend_offset[2] < 1 || (dividend_offset[2] == 1 && dividend_offset[3] < 2)) {
 				divident_sub_256(dividend_offset, 1);
 				return 1;

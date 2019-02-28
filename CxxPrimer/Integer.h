@@ -1,15 +1,8 @@
 #ifndef INTEGER_H_INCLUDED
 #define INTEGER_H_INCLUDED
 
-#ifndef FUNCTIONAL_INCLUDED
-#define FUNCTIONAL_INCLUDED
 #include <functional>
-#endif // !FUNCTIONAL_INCLUDED
-
-#ifndef STRING_INCLUDED
-#define STRING_INCLUDED
 #include <string>
-#endif // STRING_INCLUDED
 
 
 //#define SHOWLOG
@@ -33,7 +26,7 @@ public:
 	Integer(const char *cchr_src);
 	Integer(const Integer& c);
 	Integer(Integer&& c);
-	Integer& operator=(Integer& c);
+	Integer& operator=(const Integer& c);
 	Integer& operator=(Integer&& c);
 	Integer& operator=(int int_src);
 	Integer& operator=(long long int_src);
